@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
+const userController = require('./users.controller');
 
 //rutas para Google
 
@@ -38,5 +39,7 @@ router.get(
     } 
   }
 );
+
+router.get('/:userName', userController.login,userController.isYou,userController.getUser);
 
 module.exports = router;
