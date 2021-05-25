@@ -27,7 +27,7 @@ passport.use("sign-in-google",new GoogleStrategy(
         done(null, false);
       } else {
         let newUser = new User();
-            newUser.nombre = profile.displayName
+            newUser.name = profile.displayName
             newUser.avatar = profile.photos[0].value
            await newUser.save() //guardamos en la base de datos
         done(null, profile); //guardamos en la base de datos
