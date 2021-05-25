@@ -4,6 +4,9 @@ const passport = require("passport");
 const cors = require("cors");
 const userRouter = require('./api/users/index');
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+const dotenv = require('dotenv').config();
+const jwt = require('jsonwebtoken');
 
 mongoose.connect('mongodb://localhost/AllIn', {
     useNewUrlParser: true,
@@ -29,7 +32,7 @@ app.post('/register', (req, res) => {
   
     User.create({
       userName,
-      avatar,
+      email,
       password: bcrypt.hashSync(password, 10)
     })
     .then(user => {
@@ -57,7 +60,9 @@ app.post('/login', (req, res) => {
   
           // Genera el token de autenticación
           console.log('Todo bien');
-          let token = jwt.sign({ usuario: usuarioDB }, process.env.TOKEN_SECRET_KEY)
+          console.log(process.env.TOKEN_SECRET_KEY);
+          let token = jwt.sign({ usuario: usuarioDB }, process.env.TOKEN_SECRET_KEY);
+          console.log(token);
           res.json({
             usuario: usuarioDB,
             token,
@@ -65,7 +70,7 @@ app.post('/login', (req, res) => {
   
       })
       .catch(erro =>  {
-         return res.status(500).json( erro )
+         return res.status(500).send( erro )
      })
 });
 
