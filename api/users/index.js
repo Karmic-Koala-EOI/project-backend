@@ -1,7 +1,6 @@
-import { Router } from "express";
-import passport from "passport";
-import jwt from "jsonwebtoken";
-const router = Router()
+const router = require('express').Router()
+const passport = require("passport");
+const jwt = require("jsonwebtoken");
 
 //rutas para Google
 
@@ -40,4 +39,4 @@ router.get(
   }
 );
 
-export default router;
+module.exports = router;

@@ -1,8 +1,9 @@
-import express, {json, urlencoded} from "express";
-import morgan from "morgan";
-import passport from "passport";
-import cors from "cors";
-import userRouter from './api/users/index'
+const express = require('express');
+const morgan = require("morgan");
+const passport = require("passport");
+const cors = require("cors");
+const userRouter = require('./api/users/index');
+const mongoose = require('mongoose');
 
 mongoose.connect('mongodb://localhost/AllIn', {
     useNewUrlParser: true,
@@ -11,7 +12,7 @@ mongoose.connect('mongodb://localhost/AllIn', {
 
 const app = express();
 const PORT = 3000;
-const User = require('../users/users.model').default;
+const User = require('./api/users/users.model');
 
 //MiddleWares
 app.use(passport.initialize());

@@ -1,4 +1,4 @@
-import passport from "passport";
+const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
 
 const User = require('../users/users.model').default;
