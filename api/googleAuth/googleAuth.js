@@ -43,9 +43,9 @@ passport.use("sign-in-google",new GoogleStrategy(
 
 passport.use("sign-up-google",new GoogleStrategy(
   {
-    clientID:"sjsjsjsjssswww",
-    clientSecret: "sjsjsjsjsjsj",
-    callbackURL: "http://localhost:4000/auth/google/signup",
+    clientID: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+    callbackURL: "http://localhost:4200/auth/google/callback",
   },
   async (accessToken, refreshToken, profile, done) => {
     const user = await User.findById(profile.id);// si existe en la base de datos
