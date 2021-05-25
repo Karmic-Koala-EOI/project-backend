@@ -1,3 +1,6 @@
+import { Router } from "express";
+import passport from "passport";
+import jwt from "jsonwebtoken";
+const router = Router()
 
-
-module.export = router;
+export default router;

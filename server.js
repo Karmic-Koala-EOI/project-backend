@@ -2,7 +2,7 @@ import express, {json, urlencoded} from "express";
 import morgan from "morgan";
 import passport from "passport";
 import cors from "cors";
-const usersRouter = require('./api/users/users.controller');
+import router from './api/users/users.controller'
 
 mongoose.connect('mongodb://localhost/AllIn');
 
