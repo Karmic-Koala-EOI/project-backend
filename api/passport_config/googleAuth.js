@@ -21,13 +21,12 @@ passport.use("sign-in-google",new GoogleStrategy(
       callbackURL: "http://localhost:4200/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
-      const user = await User.findById(profile.id); // si el usuario no existe 
-                                                    //lo creamos
+      const user = await User.findById(profile.id);
+      
       if (user) {
         done(null, false);
       } else {
         let newUser = new User();
-            newUser._id = profile.id
             newUser.nombre = profile.displayName
             newUser.avatar = profile.photos[0].value
            await newUser.save() //guardamos en la base de datos

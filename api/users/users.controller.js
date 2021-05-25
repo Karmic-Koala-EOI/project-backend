@@ -10,7 +10,7 @@ const router = Router()
 router.get("/auth/google/callback",passport.authenticate("sign-in-google", {scope: ['https://www.googleapis.com/auth/plus.login'], session: false }),
   function (req, res) {
     if (req.user) {
-      const token = jwt.sign({id: req.user._id}, 'KARMICKOALA', {
+      const token = jwt.sign({id: req.user._id}, process.env.TOKEN_SECRET_KEY, {
         expiresIn: 60 * 60 * 24 // equivalente a 24 horas
       })
       res.cookie('session', token)        
@@ -29,7 +29,7 @@ router.get(
   passport.authenticate("sign-up-google", {scope: ['https://www.googleapis.com/auth/plus.login'], session: false }),
   function (req, res) {
     if (req.user) { 
-      const token = jwt.sign({id: req.user._id}, 'KARMICKOALA', {
+      const token = jwt.sign({id: req.user._id}, process.env.TOKEN_SECRET_KEY, {
         expiresIn: 60 * 60 * 24 // Token que expira a las 24h, pero se puede modificar
       })
       res.cookie('session', token)        
