@@ -2,7 +2,7 @@ import express, {json, urlencoded} from "express";
 import morgan from "morgan";
 import passport from "passport";
 import cors from "cors";
-import router from './api/users/users.controller'
+import userRouter from './api/users/index'
 
 mongoose.connect('mongodb://localhost/AllIn', {
     useNewUrlParser: true,
@@ -20,6 +20,9 @@ app.use(express.urlencoded({extended:false}))
 
 //Se puede configurar más adelante
 app.use(cors())
+
+//Router
+app.use('/',userRouter);
 
 
 app.listen(PORT,() => {
