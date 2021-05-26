@@ -4,25 +4,25 @@ const bcrypt = require('bcrypt');
 
 const getUser = (req,res) => {
     const owner = req.user.usuario.userName;
-    const { projected } = req.query;
+    // const { projected } = req.query;
 
-    if(projected){
-        User.findOne({userName:owner})
-            .populate('contactsId')
-            .select({ contactsId : { $slice : -10}})
-            .then(doc => {
-                if(typeof doc !== 'null'){
-                    user = {
-                        userName: doc.userName,
-                        email: doc.email
-                    }
-                    return res.status(200).json(user);
-                }
-                return res.status(404).send('This user not have contacts');
-            })
-            .catch(error => res.status(404).send('This user not have contacts'));
-    } else {
-        User.findOne({userName:owner})
+    // if(projected){
+    //     User.findOne({userName:owner})
+    //         .populate('contactsId')
+    //         .select({ contactsId : { $slice : -10}})
+    //         .then(doc => {
+    //             if(typeof doc !== 'null'){
+    //                 user = {
+    //                     userName: doc.userName,
+    //                     email: doc.email
+    //                 }
+    //                 return res.status(200).json(user);
+    //             }
+    //             return res.status(404).send('This user not have contacts');
+    //         })
+    //         .catch(error => res.status(404).send('This user not have contacts'));
+    // } else {
+    User.findOne({userName:owner})
         .then(doc => {
             if(typeof doc !== 'null'){
                 user = {
@@ -35,7 +35,7 @@ const getUser = (req,res) => {
             return res.status(404).send('This user not exist');
         })
         .catch(error => res.status(404).send(error));
-    }
+    //
        
 }
 
@@ -44,9 +44,6 @@ const deleteUser = (req,res) => {
 
     User.findOneAndDelete({userName:username})
         .then(user => {
-            if(user.contactsId.length !== 0){
-                contactController.deleteInContacts(username);
-            }
 
             userDelete = {
                 userName: user.userName,
@@ -59,10 +56,24 @@ const deleteUser = (req,res) => {
 
 const patchUser = (req,res) => {
     const userLogged = req.user.usuario.userName;
-    const usuario = req.body;
+    const usuario = req.body; 
+    const email = usuario.email || req.user.usuario.email;
+    const avatar = usuario.avatar || req.user.usuario.avatar || '';
+    console.log(avatar);
 
-    User.findOneAndUpdate({userName:userLogged},{name: usuario.name, email:usuario.email})
-        .then(doc => res.status(202).json(doc))
+    if(typeof usuario.userName === 'undefined'){
+        return res.status(400).send('The userName is empty');
+    }
+
+    User.findOneAndUpdate({userName:userLogged},{userName: usuario.userName, email:email, avatar:usuario.avatar})
+        .then(doc => {
+            console.log(doc);
+            if(doc !== null){
+                return res.status(202).json(doc);
+            }
+
+            return res.status(404).send('The user not exist');
+        })
         .catch(error => {
             if(error === 'The userName just exist'){
                 return res.status(400).send(error);
@@ -83,7 +94,6 @@ const changePassword = (req,res) => {
 }
 
 const login = (req,res,next) => {
-    console.log(req.headers);
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
 
