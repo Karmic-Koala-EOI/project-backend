@@ -3,9 +3,16 @@ const model = mongoose.model;
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema ({
-    userName: String,
+    userName: {
+        type: String,
+        required: [true, 'The username is empty']
+    },
     avatar: String,
-    email: String,
+    email: {
+        type: String,
+        required: [true, 'The email is required'],
+        unique: [true, 'These email just exist']
+    },
     registerDate: {
         type: String, 
         default: new Date().toISOString()
@@ -25,7 +32,8 @@ const userSchema = new Schema ({
             },
             message: 'The password required any capital letter and any number'
         }
-    }
+    },
+    company: String
 })
 
 module.exports = model('users', userSchema);
