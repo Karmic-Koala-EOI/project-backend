@@ -59,7 +59,6 @@ const patchUser = (req,res) => {
     const usuario = req.body; 
     const email = usuario.email || req.user.usuario.email;
     const avatar = usuario.avatar || req.user.usuario.avatar || '';
-    console.log(avatar);
 
     if(typeof usuario.userName === 'undefined'){
         return res.status(400).send('The userName is empty');
@@ -96,18 +95,26 @@ const changePassword = (req,res) => {
 const login = (req,res,next) => {
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
+    console.log('-------------------------------------')
+    console.log(token);
 
     if (token == null) return res.sendStatus(401)
 
     jwt.verify(token, process.env.TOKEN_SECRET_KEY, (err, dataStored) => {
         if (err) return res.status(403).send('The User/Password is not correct');
-        req.user = dataStored
+        console.log(dataStored);
+        req.user = dataStored;
+        console.log('DATA--------------------')
+        console.log(dataStored)
         next()
     })
 }
 
 const isYou = (req,res,next) => {
+    console.log('-----------------------------------');
+    console.log(req.params.userName);
     const userLogged = req.user.usuario.userName;
+    console.log(userLogged);
     if(req.params.userName != userLogged){
         return res.status(400).send('You cannot modify/delete another user');
     } else {

@@ -13,7 +13,6 @@ passport.deserializeUser(async (id, done) => {
 });
 
 // Estrategia para Registrarse
-console.log('afweg3rhy5u7u35y4');
 passport.use("sign-in-google",new GoogleStrategy(
     {
       clientID: process.env.CLIENT_ID,
@@ -21,14 +20,10 @@ passport.use("sign-in-google",new GoogleStrategy(
       callbackURL: "http://localhost:3000/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
-      console.log('---------------------------------')
-      console.log(profile);
       const user = await User.findById(profile.id);
-      console.log(profile);
       if (user) {
         done(null, false);
       } else {
-        console.log('Hola');
         let newUser = new User();
             newUser._id = profile.id
             newUser.userName = profile.displayName
@@ -54,11 +49,12 @@ passport.use("sign-up-google",new GoogleStrategy(
   {
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: "http://localhost:3000/auth/google/callback",
+    callbackURL: "http://localhost:3000/auth/google/login",
   },
   async (accessToken, refreshToken, profile, done) => {
     const user = await User.findById(profile.id);// si existe en la base de datos
                                                  //  puede iniciar sesion
+                                                 console.log('ewefewfwerfgwerf')
     if (user) {
       done(null, user)
     } else {
