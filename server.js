@@ -8,7 +8,7 @@ const bcrypt = require('bcrypt');
 const dotenv = require('dotenv').config();
 const jwt = require('jsonwebtoken');
 
-mongoose.connect('mongodb://localhost/AllIn', {
+mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
