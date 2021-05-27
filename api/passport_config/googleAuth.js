@@ -13,7 +13,7 @@ passport.deserializeUser(async (id, done) => {
 });
 
 // Estrategia para Registrarse
-
+console.log('afweg3rhy5u7u35y4');
 passport.use("sign-in-google",new GoogleStrategy(
     {
       clientID: process.env.CLIENT_ID,
