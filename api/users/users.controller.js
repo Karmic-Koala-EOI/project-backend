@@ -65,7 +65,7 @@ const patchUser = (req,res) => {
         return res.status(400).send('The userName is empty');
     }
 
-    User.findOneAndUpdate({userName:userLogged},{userName: usuario.userName, email:email, avatar:usuario.avatar})
+    User.findOneAndUpdate({userName:userLogged},{userName: usuario.userName, email:email, avatar:avatar})
         .then(doc => {
             console.log(doc);
             if(doc !== null){
