@@ -7,14 +7,15 @@ const userController = require('./users.controller');
 
 //ruta para Registrarse
 
-router.get("/auth/google/callback",passport.authenticate("sign-in-google", {scope: ['https://www.googleapis.com/auth/plus.login'], session: false }),
+router.get("/auth/google/callback",passport.authenticate("sign-in-google", {scope: ['https://www.googleapis.com/auth/plus.login','email'], session: false }),
   function (req, res) {
     if (req.user) {
       const token = jwt.sign({id: req.user._id}, process.env.TOKEN_SECRET_KEY, {
         expiresIn: 60 * 60 * 24 // equivalente a 24 horas
       })
+      console.log(token);
       res.cookie('session', token)        
-      res.redirect('http://localhost:3000/') //rutas por definir
+      res.redirect('http://localhost:3000') //rutas por definir
 
     } else {
       res.redirect('http://localhost:3000/register')
@@ -26,7 +27,7 @@ router.get("/auth/google/callback",passport.authenticate("sign-in-google", {scop
 //rutas para Iniciar Sesion
 router.get(
   "/auth/google/login",
-  passport.authenticate("sign-up-google", {scope: ['https://www.googleapis.com/auth/plus.login'], session: false }),
+  passport.authenticate("sign-up-google", {scope: ['https://www.googleapis.com/auth/plus.login','email'], session: false }),
   function (req, res) {
     if (req.user) { 
       const token = jwt.sign({id: req.user._id}, process.env.TOKEN_SECRET_KEY, {

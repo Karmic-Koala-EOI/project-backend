@@ -3,6 +3,7 @@ const model = mongoose.model;
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema ({
+    _id: String,
     userName: {
         type: String,
         required: [true, 'The username is empty']
@@ -17,9 +18,20 @@ const userSchema = new Schema ({
         type: String, 
         default: new Date().toISOString()
     },
+    provider:{
+        type: String,
+        enum: ['email','google']
+    },
     password: {
         type: String,
-        required: [true, "The password is empty"],
+        required: function(){
+            console.log(this.provider)
+            if(this.provider === 'google'){
+                return false;
+            } else {
+                return true;
+            }
+        },
         validate: {
             validator: (password) => {
                 if(password.length >= 8){

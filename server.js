@@ -34,13 +34,16 @@ app.post('/register', (req, res) => {
     User.create({
       userName,
       email,
-      password: bcrypt.hashSync(password, 10)
+      password: bcrypt.hashSync(password, 10),
+      _id: new mongoose.Types.ObjectId,
+      provider: 'email'
     })
     .then(user => {
       delete user.password;
       return res.status(200).json(user)
     })
     .catch(err => {
+      console.log(err);
         return res.status(400).send('This user just exist');
     });
 });
