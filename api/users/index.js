@@ -37,7 +37,7 @@ router.get(
       res.redirect('http://localhost:3000/') //rutas por definir
 
     } else {
-      console.log('ELSEEEE')
+  
       res.redirect('http://localhost:3000/login')
     } 
   }

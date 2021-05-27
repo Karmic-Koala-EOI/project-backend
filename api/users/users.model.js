@@ -25,7 +25,7 @@ const userSchema = new Schema ({
     password: {
         type: String,
         required: function(){
-            console.log(this.provider)
+            
             if(this.provider === 'google'){
                 return false;
             } else {

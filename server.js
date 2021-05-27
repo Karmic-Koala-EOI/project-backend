@@ -27,6 +27,7 @@ app.use(express.urlencoded({extended:false}))
 //Se puede configurar más adelante
 app.use(cors())
 
+//Registro clásico por email
 app.post('/register', (req, res) => {
     let body = req.body;
     let { userName, email, password } = body;
@@ -48,6 +49,7 @@ app.post('/register', (req, res) => {
     });
 });
 
+//Login clásico por email
 app.post('/login', (req, res) => {
     User.findOne({ userName: req.body.userName })
       .then( usuarioDB => {
@@ -62,11 +64,11 @@ app.post('/login', (req, res) => {
             return res.status(400).send("User/password are incorrect");
          }
   
-          // Genera el token de autenticación
+          // Genera el token de autenticación y lo guardamos
           console.log('Todo bien');
           console.log(process.env.TOKEN_SECRET_KEY);
           let token = jwt.sign({ usuario: usuarioDB }, process.env.TOKEN_SECRET_KEY);
-          console.log(token);
+
           res.json({
             usuario: usuarioDB,
             token,
