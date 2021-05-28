@@ -51,7 +51,7 @@ app.post('/register', (req, res) => {
 
 //Login clásico por email
 app.post('/login', (req, res) => {
-    User.findOne({ userName: req.body.userName })
+    User.findOne({ email: req.body.email })
       .then( usuarioDB => {
         console.log(usuarioDB);
       

@@ -43,7 +43,7 @@ router.get(
   }
 );
 
-router.get('/:userName', userController.login,userController.isYou,userController.getUser);
+router.get('/', userController.login,userController.getUser);
 router.delete('/:userName', userController.login,userController.isYou,userController.deleteUser);
 router.patch('/:userName',userController.login, userController.isYou,userController.patchUser);
 
