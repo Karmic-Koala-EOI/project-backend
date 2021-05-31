@@ -25,7 +25,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended:false}))
 
 //Se puede configurar más adelante
-app.use(cors())
+app.use(cors({origin : '*'}))
 
 //Registro clásico por email
 app.post('/register', (req, res) => {

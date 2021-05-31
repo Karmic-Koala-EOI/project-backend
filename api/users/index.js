@@ -43,7 +43,6 @@ router.get(
   }
 );
 
-router.get('/hola', (req,res) => res.json({works:"works"}));
 router.get('/', userController.login,userController.getUser);
 router.delete('/:userName', userController.login,userController.isYou,userController.deleteUser);
 router.patch('/:userName',userController.login, userController.isYou,userController.patchUser);
