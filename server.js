@@ -31,6 +31,10 @@ app.use(cors())
 app.post('/register', (req, res) => {
     let body = req.body;
     let { userName, email, password } = body;
+
+    if(typeof password === 'undefined' || password === ''){
+      return res.status(400).send('The password is empty');
+    }
   
     User.create({
       userName,
