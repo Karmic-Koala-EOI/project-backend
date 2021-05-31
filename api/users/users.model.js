@@ -12,7 +12,8 @@ const userSchema = new Schema ({
     email: {
         type: String,
         required: [true, 'The email is required'],
-        unique: [true, 'These email just exist']
+        unique: [true, 'These email just exist'],
+        match: [/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, 'Email no válido']
     },
     registerDate: {
         type: String, 
@@ -33,10 +34,8 @@ const userSchema = new Schema ({
             }
         },
         validate: {
-            validator: (password) => {
-                if(password.length >= 8){
-                    return true;
-                } else if(password.indexOf(/[A-Z]/) >= 1 || password.indexOf(/[0-9]/) >=1){
+            validator: function(){
+                if(this.password.indexOf(/[A-Z]/) >= 1 && this.password.length >= 8 || this.password.indexOf(/[0-9]/) >=1 && this.password.length >= 8){
                     return true
                 } else {
                     return false;
