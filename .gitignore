@@ -2,3 +2,5 @@
 
 # local env files
 .env
+.vercel
+/vercel.json

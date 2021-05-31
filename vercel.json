@@ -2,14 +2,22 @@
     "version": 2,
     "builds": [
         {
-            "src": "./index.js",
+            "src": "server.js",
             "use": "@vercel/node"
         }
     ],
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "/"
-        }
-    ]
+    "env":{
+        "MONGO_URL": "mongodb+srv://OdinsonTh:oDPgvsNkd8j6DYnv@karmickoala.tn6kp.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+        "MONGO_TEST": "mongodb+srv://OdinsonTh:oDPgvsNkd8j6DYnv@karmickoala.tn6kp.mongodb.net/KarmicKoalaTesting?retryWrites=true&w=majority",
+        "CLIENT_ID": "806632346579-6mqvggjflct6sp06g0m9uumrivt4ikjj.apps.googleusercontent.com",
+        "CLIENT_SECRET": "jDofjyMCC28U7KyP83gJReZ9",
+        "TOKEN_SECRET_KEY": "KARMICKOALA"
+
+
+    },
+    "routes": [{
+        "src": "/(.*)",
+        "dest": "server.js"
+    }]
+    
 }
