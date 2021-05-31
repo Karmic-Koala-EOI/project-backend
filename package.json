@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "npm install && node server.js"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
