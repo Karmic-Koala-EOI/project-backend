@@ -32,17 +32,7 @@ const userSchema = new Schema ({
             } else {
                 return true;
             }
-        },
-        // validate: {
-        //     validator: function(){
-        //         if(this.password.indexOf(/[A-Z]/) >= 1 && this.password.length >= 8 || this.password.indexOf(/[0-9]/) >=1 && this.password.length >= 8){
-        //             return true
-        //         } else {
-        //             return false;
-        //         }
-        //     },
-        //     message: 'The password required any capital letter and any number'
-        // }
+        }
     },
     company: String
 })
