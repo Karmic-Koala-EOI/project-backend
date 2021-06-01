@@ -34,6 +34,8 @@ const userSchema = new Schema ({
             }
         }
     },
+    tokenTwitter: String,
+    tokenSecretTwitter: String,
     company: String
 })
 

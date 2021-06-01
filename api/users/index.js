@@ -43,6 +43,15 @@ router.get(
   }
 );
 
+router.get('/auth/twitter/login',passport.authenticate("sign-up-twitter"), (req,res) =>{console.log(req.query)});
+
+router.get('/auth/twitter/callback', 
+  passport.authenticate("sign-up-twitter", { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+  res.redirect('/');
+});
+
 router.get('/', userController.login,userController.getUser);
 router.delete('/:userName', userController.login,userController.isYou,userController.deleteUser);
 router.patch('/:userName',userController.login, userController.isYou,userController.patchUser);

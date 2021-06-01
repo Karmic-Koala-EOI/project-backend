@@ -92,6 +92,19 @@ const changePassword = (req,res) => {
         .then(doc => res.status(202).send('Your password change sucessfully'))
 }
 
+const getUserId = (req,res,next) => {
+    const id = req.query.id;
+
+    console.log('IDDDDDDDD');
+    console.log(req.query);
+
+    // if(id === undefined){
+    //     return res.status(400).send('The id is empty');
+    // }
+    req.session.user = id;
+    next()
+}
+
 const login = (req,res,next) => {
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
@@ -121,5 +134,6 @@ module.exports = {
     patchUser,
     changePassword,
     login,
-    isYou
+    isYou,
+    getUserId
 }
