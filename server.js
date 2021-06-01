@@ -3,6 +3,7 @@ const morgan = require("morgan");
 const passport = require("passport");
 const cors = require("cors");
 const userRouter = require('./api/users/index');
+const socialRouter = require('./api/social_media/index');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const dotenv = require('dotenv').config();
@@ -94,6 +95,7 @@ app.post('/login', (req, res) => {
 
 //Router
 app.use('/',userRouter);
+app.use('/',socialRouter);
 
 
 app.listen(PORT,() => {
