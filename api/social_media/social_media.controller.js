@@ -1,10 +1,12 @@
 const twitter = require('twitter');
-const koala = new twitter({
-    consumer_key:"LtcIVmBHUAr4ITxKWaHpI8RFI",
-    consumer_secret:"3B2VV00u9h3HoUpn1ZpQM4gH8CxuPl6pRdamFrNTEplXXXGJ4V",
+const dotenv = require('dotenv').config();
 
-    access_token_key:"1399639642186686466-FPesEfUzAIkZBoi7Nxrq3MdHTvJEhP",
-    access_token_secret:"JYn6qyQQaKUNSlTd9OkiRDqkpPYYaiPtm2fFwU0Q26xBv"
+const koala = new twitter({
+    consumer_key: process.env.API_KEY,
+    consumer_secret:process.env.API_SECRET_KEY,
+
+    access_token_key: process.env.ACCESS_TOKEN,
+    access_token_secret: process.env.ACCESS_TOKEN_SECRET
 });
 
 const postTweet = async (req, res) => {
