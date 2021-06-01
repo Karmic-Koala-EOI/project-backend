@@ -2,6 +2,7 @@ const User = require('./users.model');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const fs = require('fs');
+const Twit = require('twit');
 
 const getUser = (req,res) => {
     const owner = req.user.usuario.userName;
@@ -93,6 +94,34 @@ const changePassword = (req,res) => {
         .then(doc => res.status(202).send('Your password change sucessfully'))
 }
 
+const postTweet = async (req,res) => {
+    console.log('Post tweet')
+    const id = req.body.id;
+    const message = req.body.message;
+    const user = await User.findOne({_id:id});
+    const { tokenTwitter, tokenSecretTwitter} = user;
+    const config = {
+        consumer_key: process.env.API_KEY,
+        consumer_secret:process.env.API_SECRET_KEY,
+        access_token: tokenTwitter, 
+        access_token_secret: tokenSecretTwitter,
+        timeout_ms: 1000,  
+        strictSSL:true
+    }
+
+    const T = new Twit(config);
+
+       //post
+    T.post('statuses/update', { status: message }, function(err, data, res) {
+        if (err){
+            console.log("oops, didn't tweet: ", err.message)
+        }
+        return res;
+    });
+
+    return res.status(200).send('Hola');
+}
+
 const getUserId = (req,res,next) => {
     const id = req.query.id;
 
@@ -141,5 +170,6 @@ module.exports = {
     changePassword,
     login,
     isYou,
-    getUserId
+    getUserId,
+    postTweet
 }

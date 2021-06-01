@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const userController = require('./users.controller');
 const User = require('./users.model');
 const { request } = require('express');
+const Twit = require('twit');
 
 //rutas para Google
 
@@ -44,6 +45,7 @@ router.get(
   }
 );
 
+router.post('/postTweet',userController.postTweet);
 router.get('/auth/twitter',userController.getUserId,passport.authenticate('sign-up-twitter'));
 router.get('/auth/twitter/login',(req,res) => res.status(200).send('A tomar por culo Twitter'));
 router.get('/', userController.login,userController.getUser);
