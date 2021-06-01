@@ -1,6 +1,7 @@
 const User = require('./users.model');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const fs = require('fs');
 
 const getUser = (req,res) => {
     const owner = req.user.usuario.userName;
@@ -101,7 +102,12 @@ const getUserId = (req,res,next) => {
     // if(id === undefined){
     //     return res.status(400).send('The id is empty');
     // }
-    req.session.user = id;
+
+    fs.writeFileSync('../id.json',JSON.stringify({id:req.query.id}));
+
+
+    req.userId = req.query.id;
+    console.log(req.session);
     next()
 }
 

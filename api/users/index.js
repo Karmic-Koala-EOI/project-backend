@@ -3,6 +3,7 @@ const passport = require("passport");
 const jwt = require("jsonwebtoken");
 const userController = require('./users.controller');
 const User = require('./users.model');
+const { request } = require('express');
 
 //rutas para Google
 
@@ -43,15 +44,8 @@ router.get(
   }
 );
 
-router.get('/auth/twitter/login',passport.authenticate("sign-up-twitter"), (req,res) =>{console.log(req.query)});
-
-router.get('/auth/twitter/callback', 
-  passport.authenticate("sign-up-twitter", { failureRedirect: '/login' }),
-  function(req, res) {
-    // Successful authentication, redirect home.
-  res.redirect('/');
-});
-
+router.get('/auth/twitter',userController.getUserId,passport.authenticate('sign-up-twitter'));
+router.get('/auth/twitter/login',(req,res) => res.status(200).send('A tomar por culo Twitter'));
 router.get('/', userController.login,userController.getUser);
 router.delete('/:userName', userController.login,userController.isYou,userController.deleteUser);
 router.patch('/:userName',userController.login, userController.isYou,userController.patchUser);
