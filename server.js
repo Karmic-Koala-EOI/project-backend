@@ -9,8 +9,13 @@ const dotenv = require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const googleAuth = require('./api/passport_config/googleAuth');
 
+const {MONGO_URL, MONGO_TEST, MONGO_PROD, NODE_ENV} = process.env;
+const dB = NODE_ENV === 'production' 
+      ? MONGO_PROD
+      : MONGO_URL;
 
-mongoose.connect(process.env.MONGO_URL, {
+
+mongoose.connect(dB, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
