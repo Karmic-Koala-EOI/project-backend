@@ -28,7 +28,7 @@ passport.use("sign-up-twitter",new TwitterStrategy(
          
    
       if (user) {
-          console.log('POR AKI');
+        console.log('POR AKI');
         done(null, user)
       } else {
         console.log('POR AKI 404');
