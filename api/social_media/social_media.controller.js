@@ -22,5 +22,40 @@ const postTweet = async (req, res) => {
 }
 
 module.exports = {
-    postTweet
+    postTweet, getTweet
 }
+
+
+var params = {screen_name: 'KarmicKoala1'};
+
+const getTweet = () => {
+    koala.get('statuses/user_timeline', params, function(error, tweets, response) {
+        if (!error) {
+        console.log(tweets);
+        } else {
+        console.log(error);
+        }
+    });
+}
+
+getTweet()
+
+
+
+// var twitterV2 = require("twitter-v2")
+
+// const client = new twitterV2({
+//   consumer_key: '',
+//   consumer_secret: '',
+//   access_token_key: '',
+//   access_token_secret: ''
+// });
+
+// async function  getTwit()  {
+//     const { data } = await client.get('tweets', { ids: '1228393702244134912' });
+//     console.log(data);
+// }
+
+// getTwit()
+
+
