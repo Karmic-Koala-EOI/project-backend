@@ -95,64 +95,73 @@ const changePassword = (req,res) => {
 }
 
 const postTweet = async (req,res) => {
-    console.log('Post tweet')
-    const {id, message, photo_url } = req.body;
-    const user = await User.findOne({_id:id});
-    const { tokenTwitter, tokenSecretTwitter} = user;
-    const config = {
-        consumer_key: process.env.API_KEY,
-        consumer_secret:process.env.API_SECRET_KEY,
-        access_token: tokenTwitter, 
-        access_token_secret: tokenSecretTwitter,
-        timeout_ms: 1000,  
-        strictSSL:true
-    }
+    const {message, photo_url } = req.body;
+    const id = req.query.id;
 
-    const T = new Twit(config);
-    console.log(user)
+    try {
+        const user = await User.findOne({_id:id});
+        console.log(user);
 
-    if(typeof photo_url !== 'undefined'){
-        
-        try{
-            const b64content = fs.readFileSync('koala_crazy.jpeg', { encoding: 'base64' })
- 
-            // first we must post the media to Twitter
-            T.post('media/upload', { media_data: b64content }, function (err, data, response) {
-                // now we can assign alt text to the media, for use by screen readers and
-                // other text-based presentations and interpreters
-                console.log(data)
-                const mediaIdStr = data.media_id_string
-                const altText = "Koala wins"
-                const meta_params = { media_id: mediaIdStr, alt_text: { text: altText } }
+        if(typeof user.tokenSecretTwitter === 'undefined' || typeof user.tokenTwitter === 'undefined'){
+            return res.status(400).send('This user not have a twitter account linked')
+
+        }
+
+        const { tokenTwitter, tokenSecretTwitter} = user;
+        const config = {
+            consumer_key: process.env.API_KEY,
+            consumer_secret:process.env.API_SECRET_KEY,
+            access_token: tokenTwitter, 
+            access_token_secret: tokenSecretTwitter,
+            timeout_ms: 60 * 1000,  
+            strictSSL:true
+        }
+
+        const T = new Twit(config);
+
+        if(typeof photo_url !== 'undefined'){
             
-                T.post('media/metadata/create', meta_params, function (err, data, response) {
-                    if (!err) {
-                        // now we can reference the media and post a tweet (media will attach to the tweet)
-                        const params = { status: message, media_ids: [mediaIdStr] }
             
-                        T.post('statuses/update', params, function (err, data, response) {
-                            console.log(params)
-                        })
-                    }
-                    console.log(err)
+                const b64content = fs.readFileSync('koala_crazy.jpeg', { encoding: 'base64' })
+    
+                // Cargamos el fichero de video/imagen
+                T.post('media/upload', { media_data: b64content }, function (err, data, response) {
+                    const mediaIdStr = data.media_id_string
+                    const altText = "Koala wins"
+                    const meta_params = { media_id: mediaIdStr, alt_text: { text: altText } }
+                
+                    T.post('media/metadata/create', meta_params, function (err, data, response) {
+                        if (!err) {
+                            // now we can reference the media and post a tweet (media will attach to the tweet)
+                            const params = { status: message, media_ids: [mediaIdStr] }
+                
+                            T.post('statuses/update', params, function (err, data, response) {
+                                if (err){
+                                    console.log("oops, didn't tweet: ", err.message)
+                                }
+                                return res;
+                            })
+                        }
+                    })
+                    return response;
                 })
-                return response;
-            })
-            return res.status(200).send('Post tweet with image');
-        } catch(err){
-            return res.status(400).send(err);
+                return res.status(200).send('Post tweet with image');
+           
         }
-
-    }
        //post
-    T.post('statuses/update', { status: message }, function(err, data, res) {
-        if (err){
-            console.log("oops, didn't tweet: ", err.message)
-        }
-        return res;
-    });
+        T.post('statuses/update', { status: message }, function(err, data, res) {
+            if (err){
+                console.log("oops, didn't tweet: ", err.message)
+            }
+            return res;
+        });
 
-    return res.status(200).send('Hola');
+        return res.status(200).send('Hola');
+
+    } catch(err){
+
+        return res.status(400).send(err)
+    }
 }
 
 const getUserId = (req,res,next) => {
