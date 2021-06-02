@@ -165,8 +165,6 @@ const postTweet = async (req,res) => {
 }
 
 const getUserId = (req,res,next) => {
-    const id = req.query.id;
-
     console.log('IDDDDDDDD');
     console.log(req.query);
 
@@ -175,10 +173,9 @@ const getUserId = (req,res,next) => {
     // }
 
     fs.writeFileSync('../id.json',JSON.stringify({id:req.query.id}));
-
-
-    req.userId = req.query.id;
-    console.log(req.session);
+    const id = JSON.parse(fs.readFileSync('../id.json')).id;
+    console.log('fs id')
+    console.log(id);
     next()
 }
 

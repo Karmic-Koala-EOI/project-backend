@@ -46,8 +46,13 @@ router.get(
 );
 
 router.post('/postTweet',userController.postTweet);
-router.get('/auth/twitter',userController.getUserId,passport.authenticate('sign-up-twitter'));
-router.get('/auth/twitter/login',(req,res) => res.status(200).send('A tomar por culo Twitter'));
+router.get('/auth/twitter',userController.getUserId,passport.authenticate('sign-up-twitter',{session:false}),() => console.log('hola'));
+router.get('/auth/twitter/login', 
+  passport.authenticate('sign-up-twitter', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/');
+  });
 router.get('/', userController.login,userController.getUser);
 router.delete('/:userName', userController.login,userController.isYou,userController.deleteUser);
 router.patch('/:userName',userController.login, userController.isYou,userController.patchUser);
