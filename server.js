@@ -105,7 +105,7 @@ app.post('/login', (req, res) => {
 app.use('/',userRouter);
 app.use('/',socialRouter);
 
-
+//Server puesto a la escucha
 app.listen(PORT,() => {
     console.log(`Server listen on port ${PORT}`);
 })
