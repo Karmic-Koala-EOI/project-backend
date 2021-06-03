@@ -45,10 +45,13 @@ app.post('/register', (req, res) => {
     let { userName, email, password } = body;
 
     if(typeof password === 'undefined' || password === ''){
-      return res.status(400).send('The password is empty');}
-    // } else if(!password.match(/^(?=.*\d)(?git=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/)){
-    //   return res.status(400).send('The security of the password is low');
-    // }
+
+      return res.status(400).send('The password is empty');
+
+    } else if(!password.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/)){
+
+      return res.status(400).send('The security of the password is low');
+    }
   
     User.create({
       userName,
