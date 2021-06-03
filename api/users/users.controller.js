@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const fs = require('fs');
 const Twit = require('twit');
-const woeid = require('woeid');
+const woeid = require('twitter-woeid');
 
 //Función que devuelve un usuario ya logeado
 const getUser = (req,res) => {
@@ -190,7 +190,8 @@ const getTrendingTopics = async (req,res) => {
     var country_code = 1
 
     if(typeof country !== 'undefined'){
-        country_code = woeid.getWoeid(country);
+        country_code = woeid.getSingleWOEID(country.toLowerCase())[0].woeid;
+        console.group(country_code)
     }
 
     try{
@@ -208,13 +209,12 @@ const getTrendingTopics = async (req,res) => {
 
         console.log('Llega por aki');
 
-        T.get('trends/place',{id: country_code},(err,data, resp) => {
-            
-        });
-        return res.status(200).send('Ready')
+        const resp = await T.get('trends/place',{id: country_code});
+        const trends = resp.data[0];
+        return res.status(200).json(trends);
 
     } catch(err){
-
+        return res.status(400).send(err);
     }
 
 }
