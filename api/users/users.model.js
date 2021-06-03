@@ -36,7 +36,8 @@ const userSchema = new Schema ({
     },
     tokenTwitter: String,
     tokenSecretTwitter: String,
-    company: String
+    company: String,
+    country:String
 })
 
 module.exports = model('users', userSchema);
