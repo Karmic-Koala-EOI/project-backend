@@ -2,7 +2,6 @@ const router = require('express').Router()
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
 const userController = require('./users.controller');
-const User = require('./users.model');
 
 //rutas para Google
 
@@ -18,7 +17,7 @@ router.get("/auth/google/callback",passport.authenticate("sign-in-google", {scop
       res.redirect('http://localhost:3000') //rutas por definir
 
     } else {
-      res.redirect('http://localhost:3000/register')
+      res.redirect('http://localhost:4200/register')
     }
   }
 );
@@ -43,6 +42,16 @@ router.get(
   }
 );
 
+router.get('/tweets/trending', userController.getTrendingTopics);
+router.post('/postTweet',userController.postTweet);
+router.get('/auth/twitter',userController.getUserId,passport.authenticate('sign-up-twitter',{session:false}),() => console.log('hola'));
+router.get('/auth/twitter/login', 
+  passport.authenticate('sign-up-twitter', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/');
+    //Ruta frontend ---> http://localhost:4200/social-media-accounts
+  });
 router.get('/', userController.login,userController.getUser);
 router.delete('/:userName', userController.login,userController.isYou,userController.deleteUser);
 router.patch('/:userName',userController.login, userController.isYou,userController.patchUser);

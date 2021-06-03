@@ -17,10 +17,11 @@ passport.use("sign-in-google",new GoogleStrategy(
     {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
-      callbackURL: "http://localhost:3000/auth/google/callback",
+      callbackURL: "http://localhost:4200",
     },
     async (accessToken, refreshToken, profile, done) => {
       const user = await User.findById(profile.id);
+      console.log('FFEWFWE')
       if (user) {
         done(null, false);
       } else {
@@ -43,24 +44,22 @@ passport.use("sign-in-google",new GoogleStrategy(
 
 
 // Estrategia para Iniciar Sesion
-
-
 passport.use("sign-up-google",new GoogleStrategy(
-  {
-    clientID: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: "http://localhost:3000/auth/google/login",
-  },
-  async (accessToken, refreshToken, profile, done) => {
-    const user = await User.findById(profile.id);// si existe en la base de datos
-                                                 //  puede iniciar sesion
-                                                 console.log('ewefewfwerfgwerf')
-    if (user) {
-      done(null, user)
-    } else {
-      done(null, false)
-    }
-    
-  }
-)
+      {
+        clientID: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
+        callbackURL: "http://localhost:4200",
+      },
+      async (accessToken, refreshToken, profile, done) => {
+        const user = await User.findById(profile.id);// si existe en la base de datos
+                                                    //  puede iniciar sesion
+                                                    console.log('ewefewfwerfgwerf')
+        if (user) {
+          done(null, user)
+        } else {
+          done(null, false)
+        }
+        
+      }
+    )
 );
