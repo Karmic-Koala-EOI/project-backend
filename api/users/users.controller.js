@@ -59,19 +59,20 @@ const deleteUser = (req,res) => {
 }
 
 /**Función que modifica la cuenta de un usuario ya logeado,
- * le puede cambiar el userName,email o avatar
+ * le puede cambiar el userName,email, avatar y company
  **/
 const patchUser = (req,res) => {
     const userLogged = req.user.usuario.userName;
     const usuario = req.body; 
     const email = usuario.email || req.user.usuario.email;
     const avatar = usuario.avatar || req.user.usuario.avatar || '';
+    const company = usuario.company || '';
 
     if(typeof usuario.userName === 'undefined'){
         return res.status(400).send('The userName is empty');
     }
 
-    User.findOneAndUpdate({userName:userLogged},{userName: usuario.userName, email:email, avatar:avatar})
+    User.findOneAndUpdate({userName:userLogged},{userName: usuario.userName, email:email, avatar:avatar, company:company})
         .then(doc => {
             console.log(doc);
             if(doc !== null){
