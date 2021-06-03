@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const fs = require('fs');
 const Twit = require('twit');
 
+//Función que devuelve un usuario ya logeado
 const getUser = (req,res) => {
     const owner = req.user.usuario.userName;
     // const { projected } = req.query;
@@ -41,6 +42,7 @@ const getUser = (req,res) => {
        
 }
 
+//Función que borra la cuenta de un usuario ya logeado
 const deleteUser = (req,res) => {
     const username = req.params.userName;
 
@@ -56,6 +58,9 @@ const deleteUser = (req,res) => {
         .catch(error => res.status(404).send(error));
 }
 
+/**Función que modifica la cuenta de un usuario ya logeado,
+ * le puede cambiar el userName,email o avatar
+ **/
 const patchUser = (req,res) => {
     const userLogged = req.user.usuario.userName;
     const usuario = req.body; 
@@ -86,6 +91,7 @@ const patchUser = (req,res) => {
         })
 }
 
+//Función que permite a un usuario logeado cambiar de contraseña
 const changePassword = (req,res) => {
     const userLogged = req.user.usuario.userName;
     const password = bcrypt.hashSync(req.body.password,10);
@@ -94,20 +100,29 @@ const changePassword = (req,res) => {
         .then(doc => res.status(202).send('Your password change sucessfully'))
 }
 
+/**Función que permite postear un tweet con texto plano o contenido multimedia.
+ * A traves del token y el tokenSecret de su cuenta mandamos el mensaje. La petición
+ * debe incluir el id como query y por el body debe llegar un mensaje, o un mensaje
+ * con foto.
+**/
 const postTweet = async (req,res) => {
     const {message, photo_url } = req.body;
     const id = req.query.id;
 
     try {
         const user = await User.findOne({_id:id});
-        console.log(user);
 
+        //Comprobación de datos necesarios para el tweet
         if(typeof user.tokenSecretTwitter === 'undefined' || typeof user.tokenTwitter === 'undefined'){
             return res.status(400).send('This user not have a twitter account linked')
 
+        } else if( message === '' || typeof message === 'undefined'){
+            return res.status(400).send('The message is empty');
         }
 
         const { tokenTwitter, tokenSecretTwitter} = user;
+
+        //Parámetros de configuración de Twit
         const config = {
             consumer_key: process.env.API_KEY,
             consumer_secret:process.env.API_SECRET_KEY,
@@ -121,7 +136,7 @@ const postTweet = async (req,res) => {
 
         if(typeof photo_url !== 'undefined'){
             
-            
+                //Codificamos la imagen en 64
                 const b64content = fs.readFileSync('koala_crazy.jpeg', { encoding: 'base64' })
     
                 // Cargamos el fichero de video/imagen
@@ -132,7 +147,7 @@ const postTweet = async (req,res) => {
                 
                     T.post('media/metadata/create', meta_params, function (err, data, response) {
                         if (!err) {
-                            // now we can reference the media and post a tweet (media will attach to the tweet)
+                            // Una vez cargado el contenido multimedia ya podemos hacerle referencia
                             const params = { status: message, media_ids: [mediaIdStr] }
                 
                             T.post('statuses/update', params, function (err, data, response) {
@@ -148,7 +163,8 @@ const postTweet = async (req,res) => {
                 return res.status(200).send('Post tweet with image');
            
         }
-       //post
+
+       //Post de un tweet con texto plano
         T.post('statuses/update', { status: message }, function(err, data, res) {
             if (err){
                 console.log("oops, didn't tweet: ", err.message)
@@ -156,7 +172,7 @@ const postTweet = async (req,res) => {
             return res;
         });
 
-        return res.status(200).send('Hola');
+        return res.status(200).send('Send tweet');
 
     } catch(err){
 
@@ -164,21 +180,15 @@ const postTweet = async (req,res) => {
     }
 }
 
+//Función que guarda el id del usuario con fs recibido por query
 const getUserId = (req,res,next) => {
-    console.log('IDDDDDDDD');
-    console.log(req.query);
-
-    // if(id === undefined){
-    //     return res.status(400).send('The id is empty');
-    // }
 
     fs.writeFileSync('../id.json',JSON.stringify({id:req.query.id}));
     const id = JSON.parse(fs.readFileSync('../id.json')).id;
-    console.log('fs id')
-    console.log(id);
     next()
 }
 
+//Middleware que comprueba si el usuario está logeado
 const login = (req,res,next) => {
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
@@ -192,6 +202,9 @@ const login = (req,res,next) => {
     })
 }
 
+/**Middleware que comprueba que eres tu para realizar acciones solo 
+ * puedes realiazar en tu propia cuenta
+ **/
 const isYou = (req,res,next) => {
     const userLogged = req.user.usuario.userName;
 
