@@ -99,6 +99,11 @@ const patchUser = (req,res) => {
 //Función que permite a un usuario logeado cambiar de contraseña
 const changePassword = (req,res) => {
     const userLogged = req.user.usuario.userName;
+
+    if(!req.body.password.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/)){
+        return res.status(400).send('The security of the password is low');
+
+    }
     const password = bcrypt.hashSync(req.body.password,10);
 
     User.updateOne({userName:userLogged},{password: password})

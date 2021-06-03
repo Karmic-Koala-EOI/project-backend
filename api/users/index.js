@@ -2,9 +2,6 @@ const router = require('express').Router()
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
 const userController = require('./users.controller');
-const User = require('./users.model');
-const { request } = require('express');
-const Twit = require('twit');
 
 //rutas para Google
 
