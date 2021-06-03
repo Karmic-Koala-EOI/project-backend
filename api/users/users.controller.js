@@ -71,12 +71,13 @@ const patchUser = (req,res) => {
     const email = usuario.email || req.user.usuario.email;
     const avatar = usuario.avatar || req.user.usuario.avatar || '';
     const company = usuario.company || '';
+    const country = usuario.country || '';
 
     if(typeof usuario.userName === 'undefined'){
         return res.status(400).send('The userName is empty');
     }
 
-    User.findOneAndUpdate({userName:userLogged},{userName: usuario.userName, email:email, avatar:avatar, company:company})
+    User.findOneAndUpdate({userName:userLogged},{userName: usuario.userName, email:email, avatar:avatar, company:company, country:country})
         .then(doc => {
             console.log(doc);
             if(doc !== null){
@@ -198,8 +199,7 @@ const getTrendingTopics = async (req,res) => {
     var country_code = 1
 
     if(typeof country !== 'undefined'){
-        country_code = woeid.getSingleWOEID(country.toLowerCase())[0].woeid;
-        console.group(country_code)
+        country_code = woeid.getSingleWOEID(country.toLowerCase())[0].woeid
     }
 
     try{
