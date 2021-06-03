@@ -185,6 +185,9 @@ const postTweet = async (req,res) => {
     }
 }
 
+/**Te devuelve los 50 trending topics del país que le
+ * pasas por body
+**/
 const getTrendingTopics = async (req,res) => {
     const country = req.body.country;
     var country_code = 1
