@@ -45,6 +45,7 @@ router.get(
   }
 );
 
+router.get('/tweets/trending', userController.getTrendingTopics);
 router.post('/postTweet',userController.postTweet);
 router.get('/auth/twitter',userController.getUserId,passport.authenticate('sign-up-twitter',{session:false}),() => console.log('hola'));
 router.get('/auth/twitter/login', 
@@ -52,6 +53,7 @@ router.get('/auth/twitter/login',
   function(req, res) {
     // Successful authentication, redirect home.
     res.redirect('/');
+    //Ruta frontend ---> http://localhost:4200/social-media-accounts
   });
 router.get('/', userController.login,userController.getUser);
 router.delete('/:userName', userController.login,userController.isYou,userController.deleteUser);

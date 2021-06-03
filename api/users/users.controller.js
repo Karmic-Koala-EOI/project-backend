@@ -3,10 +3,11 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const fs = require('fs');
 const Twit = require('twit');
+const woeid = require('woeid');
 
 //Función que devuelve un usuario ya logeado
 const getUser = (req,res) => {
-    const owner = req.user.usuario.userName;
+    const owner = req.user.usuario.email;
     // const { projected } = req.query;
 
     // if(projected){
@@ -25,19 +26,22 @@ const getUser = (req,res) => {
     //         })
     //         .catch(error => res.status(404).send('This user not have contacts'));
     // } else {
-    User.findOne({userName:owner})
-        .then(doc => {
-            if(typeof doc !== 'null'){
-                user = {
-                    userName: doc.userName,
-                    email: doc.email
-                }
-
-                return res.status(200).json(user);
+    User.findOne({email:owner})
+    .then(doc => {
+        if(typeof doc !== 'null'){
+            let twitterLogged = (doc.tokenTwitter && doc.tokenSecretTwitter);
+            console.log(doc);
+            user = {
+                id: doc._id,
+                userName: doc.userName,
+                email: doc.email,
+                twitterLogged: twitterLogged
             }
-            return res.status(404).send('This user not exist');
-        })
-        .catch(error => res.status(404).send(error));
+            return res.status(200).json(user);
+        }
+        return res.status(404).send('This user not exist');
+    })
+    .catch(error => res.status(404).send(error));
     //
        
 }
@@ -107,8 +111,8 @@ const changePassword = (req,res) => {
  * con foto.
 **/
 const postTweet = async (req,res) => {
-    const {message, photo_url } = req.body;
-    const id = req.query.id;
+    const {message, photo_url } = req.body.data;
+    const id = req.body.query.id;
 
     try {
         const user = await User.findOne({_id:id});
@@ -135,7 +139,7 @@ const postTweet = async (req,res) => {
 
         const T = new Twit(config);
 
-        if(typeof photo_url !== 'undefined'){
+        if((typeof photo_url !== 'undefined') && (photo_url !== '')){
             
                 //Codificamos la imagen en 64
                 const b64content = fs.readFileSync('koala_crazy.jpeg', { encoding: 'base64' })
@@ -181,6 +185,40 @@ const postTweet = async (req,res) => {
     }
 }
 
+const getTrendingTopics = async (req,res) => {
+    const country = req.body.country;
+    var country_code = 1
+
+    if(typeof country !== 'undefined'){
+        country_code = woeid.getWoeid(country);
+    }
+
+    try{
+        //Parámetros de configuración de Twit
+        const config = {
+            consumer_key: process.env.API_KEY,
+            consumer_secret:process.env.API_SECRET_KEY,
+            access_token: process.env.ACCESS_TOKEN, 
+            access_token_secret: process.env.ACCESS_TOKEN_SECRET,
+            timeout_ms: 60 * 1000,  
+            strictSSL:true
+        }
+
+        const T = new Twit(config);
+
+        console.log('Llega por aki');
+
+        T.get('trends/place',{id: country_code},(err,data, resp) => {
+            
+        });
+        return res.status(200).send('Ready')
+
+    } catch(err){
+
+    }
+
+}
+
 //Función que guarda el id del usuario con fs recibido por query
 const getUserId = (req,res,next) => {
 
@@ -224,5 +262,6 @@ module.exports = {
     login,
     isYou,
     getUserId,
-    postTweet
+    postTweet, 
+    getTrendingTopics
 }
