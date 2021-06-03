@@ -20,7 +20,7 @@ router.get("/auth/google/callback",passport.authenticate("sign-in-google", {scop
       res.redirect('http://localhost:3000') //rutas por definir
 
     } else {
-      res.redirect('http://localhost:3000/register')
+      res.redirect('http://localhost:4200/register')
     }
   }
 );

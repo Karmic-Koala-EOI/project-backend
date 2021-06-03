@@ -17,7 +17,7 @@ passport.use("sign-in-google",new GoogleStrategy(
     {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
-      callbackURL: "http://localhost:3000/auth/google/callback",
+      callbackURL: "http://localhost:4200",
     },
     async (accessToken, refreshToken, profile, done) => {
       const user = await User.findById(profile.id);
@@ -48,7 +48,7 @@ passport.use("sign-up-google",new GoogleStrategy(
       {
         clientID: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
-        callbackURL: "http://localhost:3000/auth/google/callback",
+        callbackURL: "http://localhost:4200",
       },
       async (accessToken, refreshToken, profile, done) => {
         const user = await User.findById(profile.id);// si existe en la base de datos
