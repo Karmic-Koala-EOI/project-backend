@@ -21,7 +21,6 @@ passport.use("sign-in-google",new GoogleStrategy(
     },
     async (accessToken, refreshToken, profile, done) => {
       const user = await User.findById(profile.id);
-      console.log('FFEWFWE')
       if (user) {
         done(null, false);
       } else {
@@ -51,9 +50,10 @@ passport.use("sign-up-google",new GoogleStrategy(
         callbackURL: "http://localhost:4200",
       },
       async (accessToken, refreshToken, profile, done) => {
-        const user = await User.findById(profile.id);// si existe en la base de datos
-                                                    //  puede iniciar sesion
-                                                    console.log('ewefewfwerfgwerf')
+        const user = await User.findById(profile.id);
+
+        /**si existe en la base de datos
+         puede iniciar sesion */
         if (user) {
           done(null, user)
         } else {

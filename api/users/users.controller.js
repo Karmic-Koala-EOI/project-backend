@@ -29,13 +29,14 @@ const getUser = (req,res) => {
     User.findOne({email:owner})
     .then(doc => {
         if(typeof doc !== 'null'){
-            let twitterLogged = (doc.tokenTwitter && doc.tokenSecretTwitter);
-            console.log(doc);
+            let twitterLogged = (doc.tokenTwitter && doc.tokenSecretTwitter)  ? true : false;
             user = {
                 id: doc._id,
                 userName: doc.userName,
                 email: doc.email,
-                twitterLogged: twitterLogged
+                twitterLogged: twitterLogged,
+                company: doc.company,
+                country: doc.country
             }
             return res.status(200).json(user);
         }
