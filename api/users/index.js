@@ -9,12 +9,15 @@ const userController = require('./users.controller');
 
 router.get("/auth/google/callback",passport.authenticate("sign-in-google", {scope: ['https://www.googleapis.com/auth/plus.login','email'], session: false }),
   function (req, res) {
+    console.log("Registro de Google 1");
     if (req.user) {
       const token = jwt.sign({id: req.user._id}, process.env.TOKEN_SECRET_KEY, {
         expiresIn: 60 * 60 * 24 // equivalente a 24 horas
       })
-      res.cookie('session', token)        
-      res.redirect('http://localhost:3000') //rutas por definir
+      res.cookie('session', token);
+      console.log("Registro de Google 2");
+      console.log(token);
+      res.redirect('http://localhost:4200') //rutas por definir
 
     } else {
       res.redirect('http://localhost:4200/register')
@@ -28,12 +31,15 @@ router.get(
   "/auth/google/login",
   passport.authenticate("sign-up-google", {scope: ['https://www.googleapis.com/auth/plus.login','email'], session: false }),
   async function (req, res) {
+    console.log("Login de Google 1");
     if (req.user) { 
       const token = jwt.sign({usuario: req.user}, process.env.TOKEN_SECRET_KEY, {
         expiresIn: 60 * 60 * 24 // Token que expira a las 24h, pero se puede modificar
       })
       res.cookie('session', token);
-      res.redirect('http://localhost:3000/') //rutas por definir
+      console.log("Login de Google 2");
+      console.log(token);
+      res.redirect('http://localhost:4200') //rutas por definir
 
     } else {
   
