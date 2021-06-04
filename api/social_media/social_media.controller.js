@@ -22,7 +22,7 @@ const postTweet = async (req, res) => {
 }
 
 module.exports = {
-    postTweet, getTweet
+    postTweet
 }
 
 
@@ -38,7 +38,7 @@ const getTweet = () => {
     });
 }
 
-getTweet()
+
 
 
 

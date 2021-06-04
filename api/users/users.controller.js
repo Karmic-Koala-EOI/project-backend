@@ -191,6 +191,57 @@ const postTweet = async (req,res) => {
     }
 }
 
+const getUserTweets = async (req, res) =>  {
+    console.log(req.params.email);
+    if( req.params.email !== "") {
+        try{
+            console.log("fallo con user");
+            const user = await User.findOne({email: req.params.email});
+            console.log(user);
+            if (typeof user.twitterUserName === "undefined" || user.tokenTwitter === "undefined" || user.tokenSecretTwitter === "undefined"){
+                
+                return res.status(404).send("the user not have twitter account");
+            }
+
+            const config = {
+                consumer_key: process.env.API_KEY,
+                consumer_secret:process.env.API_SECRET_KEY,
+                access_token: user.tokenTwitter, 
+                access_token_secret: user.tokenSecretTwitter,
+                timeout_ms: 60 * 1000,  
+                strictSSL:true
+            }
+
+            const T = new Twit(config);
+            console.log("llega aqui");
+            const resp =  await T.get('statuses/user_timeline', { screen_name: user.twitterUserName });
+            const tweets = resp.data;
+
+            // created_at: 'Thu Jun 03 12:21:24 +0000 2021',
+            // id: 1400427396772339700,
+            // id_str: '1400427396772339714',
+            // text: 'Legalicemos el eucalipto part. 5 https://t.co/zDypCxwDCA',
+
+            const tweetsFiltered = tweets.map( tweet => {
+                let tw = {
+                    created_at : "",
+                    text : ""
+                }
+                tw.created_at = tweet.created_at;
+                tw.text = tweet.text;
+                return tw;
+            });
+
+            console.log(tweetsFiltered);
+            return res.status(200).json(tweetsFiltered);
+
+        } catch (err) {
+            return res.status(404).send("hay un error gordo");
+        }
+    }
+    return res.status(400).send("the email is empty");
+}
+
 /**Te devuelve los 50 trending topics del país que le
  * pasas por body
 **/
@@ -271,5 +322,6 @@ module.exports = {
     isYou,
     getUserId,
     postTweet, 
-    getTrendingTopics
+    getTrendingTopics,
+    getUserTweets
 }

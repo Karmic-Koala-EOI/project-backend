@@ -21,8 +21,7 @@ passport.use("sign-up-twitter",new TwitterStrategy(
     },
     async (token, tokenSecret, profile, done) => {
       const id = JSON.parse(fs.readFileSync('../id.json')).id;
-      const user = await User.findOneAndUpdate({_id:id},{tokenTwitter:token,tokenSecretTwitter:tokenSecret});// si existe en la base de datos
-
+      const user = await User.findOneAndUpdate({_id:id},{tokenTwitter:token,tokenSecretTwitter:tokenSecret,twitterUserName : profile.username});// si existe en la base de datos
       if (user) {
         done(null, user)
       } else {

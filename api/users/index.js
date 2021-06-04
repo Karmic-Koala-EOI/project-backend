@@ -42,6 +42,7 @@ router.get(
   }
 );
 
+router.get('/tweets/:email',userController.getUserTweets);
 router.get('/tweets/trending', userController.getTrendingTopics);
 router.post('/postTweet',userController.postTweet);
 router.get('/auth/twitter',userController.getUserId,passport.authenticate('sign-up-twitter',{session:false}),() => console.log('hola'));
