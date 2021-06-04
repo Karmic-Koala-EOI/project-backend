@@ -53,7 +53,7 @@ router.get('/auth/twitter/login',
     //Ruta frontend ---> http://localhost:4200/social-media-accounts
   });
 router.get('/', userController.login,userController.getUser);
-router.delete('/:userName', userController.login,userController.isYou,userController.deleteUser);
-router.patch('/:userName',userController.login, userController.isYou,userController.patchUser);
+router.delete('/:email', userController.login,userController.isYou,userController.deleteUser);
+router.patch('/:email',userController.login, userController.isYou,userController.patchUser);
 
 module.exports = router;

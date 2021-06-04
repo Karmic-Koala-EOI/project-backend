@@ -49,9 +49,9 @@ const getUser = (req,res) => {
 
 //Función que borra la cuenta de un usuario ya logeado
 const deleteUser = (req,res) => {
-    const username = req.params.userName;
+    const email = req.params.email;
 
-    User.findOneAndDelete({userName:username})
+    User.findOneAndDelete({email:email})
         .then(user => {
 
             userDelete = {
@@ -67,20 +67,14 @@ const deleteUser = (req,res) => {
  * le puede cambiar el userName,email, avatar y company
  **/
 const patchUser = (req,res) => {
-    const userLogged = req.user.usuario.userName;
+    const userLoggedEmail = req.user.usuario.email;
     const usuario = req.body; 
-    const email = usuario.email || req.user.usuario.email;
     const avatar = usuario.avatar || req.user.usuario.avatar || '';
     const company = usuario.company || '';
     const country = usuario.country || '';
 
-    if(typeof usuario.userName === 'undefined'){
-        return res.status(400).send('The userName is empty');
-    }
-
-    User.findOneAndUpdate({userName:userLogged},{userName: usuario.userName, email:email, avatar:avatar, company:company, country:country})
+    User.findOneAndUpdate({email:userLoggedEmail},{userName: usuario.userName, avatar:avatar, company:company, country:country})
         .then(doc => {
-            console.log(doc);
             if(doc !== null){
                 return res.status(202).json(doc);
             }
@@ -88,9 +82,9 @@ const patchUser = (req,res) => {
             return res.status(404).send('The user not exist');
         })
         .catch(error => {
-            if(error === 'The userName just exist'){
+            if(error === 'The email just exist'){
                 return res.status(400).send(error);
-            } else if(error === 'The userName is required'){
+            } else if(error === 'The email is required'){
                 return res.status(404).send(error);
             } else {
                 return res.status(404).send(error);
@@ -254,9 +248,9 @@ const login = (req,res,next) => {
  * puedes realiazar en tu propia cuenta
  **/
 const isYou = (req,res,next) => {
-    const userLogged = req.user.usuario.userName;
+    const userLogged = req.user.usuario.email;
 
-    if(req.params.userName != userLogged){
+    if(req.params.email != userLogged){
         return res.status(400).send('You cannot modify/delete another user');
     } else {
         next();
