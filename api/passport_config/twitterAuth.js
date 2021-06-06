@@ -17,7 +17,7 @@ passport.use("sign-up-twitter",new TwitterStrategy(
     {
       consumerKey: process.env.API_KEY,
       consumerSecret: process.env.API_SECRET_KEY,
-      callbackURL: `http://localhost:3000/auth/twitter/login`
+      callbackURL: `https://karmic-koala-backend.vercel.app/auth/twitter/login`
     },
     async (token, tokenSecret, profile, done) => {
       const id = JSON.parse(fs.readFileSync('../id.json')).id;
