@@ -3,13 +3,21 @@ const morgan = require("morgan");
 const passport = require("passport");
 const cors = require("cors");
 const userRouter = require('./api/users/index');
+const socialRouter = require('./api/social_media/index');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const dotenv = require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const googleAuth = require('./api/passport_config/googleAuth');
+const twitterAuth = require('./api/passport_config/twitterAuth');
 
-mongoose.connect(process.env.MONGO_URL, {
+const {MONGO_URL, MONGO_TEST, MONGO_PROD, NODE_ENV} = process.env;
+const dB = NODE_ENV === 'production' 
+      ? MONGO_PROD
+      : MONGO_URL;
+
+
+mongoose.connect(dB, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
@@ -23,6 +31,10 @@ app.use(passport.initialize());
 app.use(morgan('dev'))
 app.use(express.json());
 app.use(express.urlencoded({extended:false}))
+app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 //Se puede configurar más adelante
 app.use(cors({origin : '*'}))
@@ -33,7 +45,12 @@ app.post('/register', (req, res) => {
     let { userName, email, password } = body;
 
     if(typeof password === 'undefined' || password === ''){
+
       return res.status(400).send('The password is empty');
+
+    } else if(!password.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/)){
+
+      return res.status(400).send('The security of the password is low');
     }
   
     User.create({
@@ -86,8 +103,9 @@ app.post('/login', (req, res) => {
 
 //Router
 app.use('/',userRouter);
+app.use('/',socialRouter);
 
-
+//Server puesto a la escucha
 app.listen(PORT,() => {
     console.log(`Server listen on port ${PORT}`);
 })
