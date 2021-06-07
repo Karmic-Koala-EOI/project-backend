@@ -190,8 +190,10 @@ const postTweet = async (req,res) => {
  * pasas por body
 **/
 const getTrendingTopics = async (req,res) => {
-    const country = req.body.data.country;
+    const country = req.body.country;
     var country_code = 1
+
+    console.log(req.body);
 
     if(typeof country !== 'undefined'){
         country_code = woeid.getSingleWOEID(country.toLowerCase())[0].woeid
