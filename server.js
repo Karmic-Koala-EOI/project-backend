@@ -37,7 +37,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //Se puede configurar más adelante
-app.use(cors({origin : '*'}))
+app.use(cors({origin : 'https://karmickoala.vercel.app/'}))
 
 //Registro clásico por email
 app.post('/register', (req, res) => {
