@@ -20,12 +20,15 @@ passport.use("sign-up-twitter",new TwitterStrategy(
       callbackURL: `https://karmic-koala-backend.vercel.app/auth/twitter/login`
     },
     async (token, tokenSecret, profile, done) => {
+      console.log('AKi twitter')
       const id = JSON.parse(fs.readFileSync('/tmp/id.json')).id;
       const user = await User.findOneAndUpdate({_id:id},{tokenTwitter:token,tokenSecretTwitter:tokenSecret});// si existe en la base de datos
 
       if (user) {
+        console.log('AKi twitter y user')
         done(null, user)
       } else {
+        console.log('AKi twitter y 404')
         done(null, false)
       }
       

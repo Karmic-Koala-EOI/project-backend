@@ -55,6 +55,7 @@ router.get('/auth/twitter/login',
   passport.authenticate('sign-up-twitter', { failureRedirect: '/login' }),
   function(req, res) {
     // Successful authentication, redirect home.
+    console.log('AKi controller')
     res.redirect('https://karmickoala.vercel.app/dashboard/social-media-accounts');
     //Ruta frontend ---> http://localhost:4200/social-media-accounts
   });
