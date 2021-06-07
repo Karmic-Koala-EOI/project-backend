@@ -193,7 +193,7 @@ const getTrendingTopics = async (req,res) => {
     const country = req.params.country;
     var country_code = 1
 
-    if((typeof country !== 'undefined') && (country !== "Global")){
+    if((country !== "undefined") && (country !== "Global")){
         country_code = woeid.getSingleWOEID(country.toLowerCase())[0].woeid
     }
 
