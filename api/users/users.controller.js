@@ -226,6 +226,9 @@ const getTrendingTopics = async (req,res) => {
 const getUserId = (req,res,next) => {
     console.log("query" + req.query);
 
+    console.log("API  " + process.env.API_KEY);
+    console.log("KEY  " + process.env.API_SECRET_KEY)
+
     fs.writeFileSync('/tmp/id.json',JSON.stringify({id:req.query.id}));
     const id = JSON.parse(fs.readFileSync('/tmp/id.json')).id;
     console.log('id ' + id )
