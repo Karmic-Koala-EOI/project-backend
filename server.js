@@ -31,7 +31,7 @@ app.use(passport.initialize());
 app.use(morgan('dev'))
 app.use(express.json());
 app.use(express.urlencoded({extended:false}))
-app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true, cookie: { secure: false }}));
+app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true}));
 
 app.use(passport.initialize());
 app.use(passport.session());
