@@ -225,8 +225,8 @@ const getTrendingTopics = async (req,res) => {
 //Función que guarda el id del usuario con fs recibido por query
 const getUserId = (req,res,next) => {
 
-    fs.writeFileSync('../id.json',JSON.stringify({id:req.query.id}));
-    const id = JSON.parse(fs.readFileSync('../id.json')).id;
+    fs.writeFileSync('./id.json',JSON.stringify({id:req.query.id}));
+    const id = JSON.parse(fs.readFileSync('./id.json')).id;
     next()
 }
 
