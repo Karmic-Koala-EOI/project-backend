@@ -190,7 +190,7 @@ const postTweet = async (req,res) => {
  * pasas por body
 **/
 const getTrendingTopics = async (req,res) => {
-    const country = req.body.country;
+    const country = req.body.data.country;
     var country_code = 1
 
     if(typeof country !== 'undefined'){
