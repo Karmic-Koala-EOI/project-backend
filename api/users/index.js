@@ -55,7 +55,7 @@ router.get('/auth/twitter/login',
   passport.authenticate('sign-up-twitter', { failureRedirect: '/login' }),
   function(req, res) {
     // Successful authentication, redirect home.
-    res.redirect('https://karmickoala.vercel.app/social-media-accounts');
+    res.redirect('https://karmickoala.vercel.app/dashboard/social-media-accounts');
     //Ruta frontend ---> http://localhost:4200/social-media-accounts
   });
 router.get('/', userController.login,userController.getUser);
