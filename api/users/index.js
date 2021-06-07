@@ -50,7 +50,7 @@ router.get(
 
 router.get('/tweets/trending', userController.getTrendingTopics);
 router.post('/postTweet',userController.postTweet);
-router.get('/auth/twitter',userController.getUserId,passport.authenticate('sign-up-twitter',{session:true}),() => console.log('hola'));
+router.get('/auth/twitter',userController.getUserId,passport.authenticate('sign-up-twitter',{session:false}),() => console.log('hola'));
 router.get('/auth/twitter/login', 
   passport.authenticate('sign-up-twitter', { failureRedirect: '/login' }),
   function(req, res) {
