@@ -2,6 +2,7 @@ const router = require('express').Router()
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
 const userController = require('./users.controller');
+const userMiddlewares = require('../middlewares/user.middlewares');
 
 //rutas para Google
 
@@ -50,17 +51,17 @@ router.get(
 
 router.get('/tweets/trending/:country', userController.getTrendingTopics);
 router.post('/postTweet',userController.postTweet);
-router.get('/auth/twitter',userController.getUserId,passport.authenticate('sign-up-twitter',{session:false}));
+router.get('/auth/twitter',userMiddlewares.getUserId,passport.authenticate('sign-up-twitter',{session:false}));
+
 router.get('/auth/twitter/login', 
   passport.authenticate('sign-up-twitter', { failureRedirect: '/login' }),
   function(req, res) {
     // Successful authentication, redirect home.
-    console.log('AKi controller')
-    res.redirect('https://karmickoala.vercel.app/dashboard/social-media-accounts');
-    //Ruta frontend ---> http://localhost:4200/social-media-accounts
+    res.redirect('http://localhost:4200/dashboard/social-media-accounts');
+    //Ruta frontend ---> http://localhost:4200/dashboard/social-media-accounts
   });
-router.get('/', userController.login,userController.getUser);
-router.delete('/:email', userController.login,userController.isYou,userController.deleteUser);
-router.patch('/:email',userController.login, userController.isYou,userController.patchUser);
+router.get('/', userMiddlewares.login,userController.getUser);
+router.delete('/:email', userMiddlewares.login,userMiddlewares.isYou,userController.deleteUser);
+router.patch('/:email',userMiddlewares.login, userMiddlewares.isYou,userController.patchUser);
 
 module.exports = router;

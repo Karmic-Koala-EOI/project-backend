@@ -31,7 +31,7 @@ const getUser = (req,res) => {
         if(typeof doc !== 'null'){
             let twitterLogged = (doc.tokenTwitter && doc.tokenSecretTwitter)  ? true : false;
             user = {
-                id: doc._id,
+                _id: doc._id,
                 userName: doc.userName,
                 email: doc.email,
                 twitterLogged: twitterLogged,
@@ -113,7 +113,7 @@ const changePassword = (req,res) => {
 **/
 const postTweet = async (req,res) => {
     const {message, photo_url } = req.body.data;
-    const id = req.body.query.id;
+    const id = req.body.query._id;
 
     try {
         const user = await User.findOne({_id:id});
@@ -267,9 +267,6 @@ module.exports = {
     deleteUser,
     patchUser,
     changePassword,
-    login,
-    isYou,
-    getUserId,
     postTweet, 
     getTrendingTopics
 }
