@@ -3,6 +3,7 @@ const passport = require("passport");
 const jwt = require("jsonwebtoken");
 const userController = require('./users.controller');
 const userMiddlewares = require('../middlewares/user.middlewares');
+const { serialize } = require('cookie');
 
 //rutas para Google
 
@@ -16,6 +17,8 @@ router.get("/auth/google/callback",passport.authenticate("sign-in-google", {scop
         expiresIn: 60 * 60 * 24 // equivalente a 24 horas
       })
       res.cookie('session', token);
+      const cookie = serialize('session', token, {httpOnly: true})
+      res.setHeader('Set-Cookie',[cookie])
       console.log("Registro de Google 2");
       console.log(token);
       res.redirect('https://karmickoala.vercel.app') //rutas por definir
@@ -38,6 +41,8 @@ router.get(
         expiresIn: 60 * 60 * 24 // Token que expira a las 24h, pero se puede modificar
       })
       res.cookie('session', token);
+      const cookie = serialize('session', token, {httpOnly: true})
+      res.setHeader('Set-Cookie',[cookie])
       console.log("Login de Google 2");
       console.log(token);
       res.redirect('https://karmickoala.vercel.app') //rutas por definir
