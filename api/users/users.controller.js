@@ -222,46 +222,6 @@ const getTrendingTopics = async (req,res) => {
 
 }
 
-//Función que guarda el id del usuario con fs recibido por query
-const getUserId = (req,res,next) => {
-    console.log("query" + req.query);
-
-    console.log("API  " + process.env.API_KEY);
-    console.log("KEY  " + process.env.API_SECRET_KEY)
-
-    fs.writeFileSync('/tmp/id.json',JSON.stringify({id:req.query.id}));
-    const id = JSON.parse(fs.readFileSync('/tmp/id.json')).id;
-    console.log('id ' + id )
-    next()
-}
-
-//Middleware que comprueba si el usuario está logeado
-const login = (req,res,next) => {
-    const authHeader = req.headers['authorization']
-    const token = authHeader && authHeader.split(' ')[1]
-
-    if (token == null) return res.sendStatus(401)
-
-    jwt.verify(token, process.env.TOKEN_SECRET_KEY, (err, dataStored) => {
-        if (err) return res.status(403).send('The User/Password is not correct');
-        req.user = dataStored;
-        next()
-    })
-}
-
-/**Middleware que comprueba que eres tu para realizar acciones solo 
- * puedes realiazar en tu propia cuenta
- **/
-const isYou = (req,res,next) => {
-    const userLogged = req.user.usuario.email;
-
-    if(req.params.email != userLogged){
-        return res.status(400).send('You cannot modify/delete another user');
-    } else {
-        next();
-    }
-}
-
 module.exports = {
     getUser,
     deleteUser,
