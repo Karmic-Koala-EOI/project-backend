@@ -17,7 +17,7 @@ const dB = NODE_ENV === 'production'
       : MONGO_URL;
 
 
-mongoose.connect(dB, {
+mongoose.connect(MONGO_PROD, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
@@ -31,7 +31,7 @@ app.use(passport.initialize());
 app.use(morgan('dev'))
 app.use(express.json());
 app.use(express.urlencoded({extended:false}))
-app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true}));
 
 app.use(passport.initialize());
 app.use(passport.session());
