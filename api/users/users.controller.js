@@ -262,9 +262,6 @@ module.exports = {
     deleteUser,
     patchUser,
     changePassword,
-    login,
-    isYou,
-    getUserId,
     postTweet, 
     getTrendingTopics
 }

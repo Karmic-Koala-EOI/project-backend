@@ -2,6 +2,7 @@ const router = require('express').Router()
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
 const userController = require('./users.controller');
+const userMiddlewares = require('../middlewares/user.middlewares');
 
 //rutas para Google
 
@@ -58,8 +59,8 @@ router.get('/auth/twitter/login',
     res.redirect('/');
     //Ruta frontend ---> http://localhost:4200/social-media-accounts
   });
-router.get('/', userController.login,userController.getUser);
-router.delete('/:email', userController.login,userController.isYou,userController.deleteUser);
-router.patch('/:email',userController.login, userController.isYou,userController.patchUser);
+router.get('/', userMiddlewares.login,userController.getUser);
+router.delete('/:email', userMiddlewares.login,userMiddlewares.isYou,userController.deleteUser);
+router.patch('/:email',userMiddlewares.login, userMiddlewares.isYou,userController.patchUser);
 
 module.exports = router;
