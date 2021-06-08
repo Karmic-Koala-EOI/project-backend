@@ -49,15 +49,15 @@ router.get(
   }
 );
 
-router.get('/tweets/trending', userController.getTrendingTopics);
+router.get('/tweets/trending/:country', userController.getTrendingTopics);
 router.post('/postTweet',userController.postTweet);
-router.get('/auth/twitter',userController.getUserId,passport.authenticate('sign-up-twitter',{session:false}),() => console.log('hola'));
+router.get('/auth/twitter',userMiddlewares.getUserId,passport.authenticate('sign-up-twitter',{session:false}));
 router.get('/auth/twitter/login', 
   passport.authenticate('sign-up-twitter', { failureRedirect: '/login' }),
   function(req, res) {
     // Successful authentication, redirect home.
-    res.redirect('/');
-    //Ruta frontend ---> http://localhost:4200/social-media-accounts
+    res.redirect('http://localhost:4200/dashboard/social-media-accounts');
+    //Ruta frontend ---> http://localhost:4200/dashboard/social-media-accounts
   });
 router.get('/', userMiddlewares.login,userController.getUser);
 router.delete('/:email', userMiddlewares.login,userMiddlewares.isYou,userController.deleteUser);

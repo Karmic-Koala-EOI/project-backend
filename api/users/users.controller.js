@@ -31,7 +31,7 @@ const getUser = (req,res) => {
         if(typeof doc !== 'null'){
             let twitterLogged = (doc.tokenTwitter && doc.tokenSecretTwitter)  ? true : false;
             user = {
-                id: doc._id,
+                _id: doc._id,
                 userName: doc.userName,
                 email: doc.email,
                 twitterLogged: twitterLogged,
@@ -113,7 +113,7 @@ const changePassword = (req,res) => {
 **/
 const postTweet = async (req,res) => {
     const {message, photo_url } = req.body.data;
-    const id = req.body.query.id;
+    const id = req.body.query._id;
 
     try {
         const user = await User.findOne({_id:id});
@@ -190,10 +190,10 @@ const postTweet = async (req,res) => {
  * pasas por body
 **/
 const getTrendingTopics = async (req,res) => {
-    const country = req.body.country;
+    const country = req.params.country;
     var country_code = 1
 
-    if(typeof country !== 'undefined'){
+    if((country !== "undefined") && (country !== "Global")){
         country_code = woeid.getSingleWOEID(country.toLowerCase())[0].woeid
     }
 
