@@ -21,7 +21,7 @@ router.get("/auth/google/callback",passport.authenticate("sign-in-google", {scop
       res.setHeader('Set-Cookie',[cookie])
       console.log("Registro de Google 2");
       console.log(token);
-      res.redirect('https://karmickoala.vercel.app') //rutas por definir
+      res.cookie('session', token).redirect('https://karmickoala.vercel.app') //rutas por definir
 
     } else {
       res.redirect('https://karmickoala.vercel.app/register')
