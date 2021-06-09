@@ -25,7 +25,7 @@ dB = NODE_ENV === 'production'
 
 console.log(dB);
 
-mongoose.connect(MONGO_PROD, {
+mongoose.connect(dB, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
