@@ -8,6 +8,7 @@ const woeid = require('twitter-woeid');
 //Función que devuelve un usuario ya logeado
 const getUser = (req,res) => {
     const owner = req.user.usuario.email;
+    console.log(req.user.usuario);
     // const { projected } = req.query;
 
     // if(projected){

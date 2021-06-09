@@ -12,7 +12,8 @@ router.get("/auth/google/callback",passport.authenticate("sign-in-google", {scop
   function (req, res) {
     console.log("Registro de Google 1");
     if (req.user) {
-      const token = jwt.sign({id: req.user._id}, process.env.TOKEN_SECRET_KEY, {
+      console.log(req.user)
+      const token = jwt.sign({usuario: req.user}, process.env.TOKEN_SECRET_KEY, {
         expiresIn: 60 * 60 * 24 // equivalente a 24 horas
       })
       res.cookie('session', token);
