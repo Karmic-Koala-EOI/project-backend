@@ -18,7 +18,7 @@ beforeEach(async () => {
 
     const userM = new User(user)
     await userM.save();
-})
+});
 
 test('Login Classic User', async () => {
     const userLogin = {
@@ -37,4 +37,4 @@ test('Login Classic User', async () => {
 afterAll( () => {
     server.close();
     mongoose.disconnect();
-})
+});
