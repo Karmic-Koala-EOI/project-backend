@@ -10,6 +10,7 @@ const dotenv = require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const googleAuth = require('./api/passport_config/googleAuth');
 const twitterAuth = require('./api/passport_config/twitterAuth');
+const cookieParser = require('cookie-parser');
 
 const {MONGO_URL, MONGO_TEST, MONGO_PROD, NODE_ENV} = process.env;
 const dB = NODE_ENV === 'production' 
@@ -32,6 +33,7 @@ app.use(morgan('dev'))
 app.use(express.json());
 app.use(express.urlencoded({extended:false}))
 app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true}));
+app.use(cookieParser());
 
 app.use(passport.initialize());
 app.use(passport.session());
