@@ -48,14 +48,16 @@ const deleteUser = (req,res) => {
 /**Función que modifica la cuenta de un usuario ya logeado,
  * le puede cambiar el userName,email, avatar y company
  **/
-const patchUser = (req,res) => {
+ const patchUser = (req,res) => {
     const userLoggedEmail = req.user.usuario.email;
     const usuario = req.body; 
     const avatar = usuario.avatar || req.user.usuario.avatar || '';
-    const company = usuario.company || '';
-    const country = usuario.country || '';
+    const company = usuario.company || req.user.usuario.company || '';
+    const country = usuario.country || req.user.usuario.country || '';
+    const tokenTwitter = usuario.tokenTwitter || req.user.usuario.tokenTwitter || '';
+    const tokenSecretTwitter = usuario.tokenSecretTwitter || req.user.usuario.tokenSecretTwitter || '';
 
-    User.findOneAndUpdate({email:userLoggedEmail},{userName: usuario.userName, avatar:avatar, company:company, country:country})
+    User.findOneAndUpdate({email:userLoggedEmail},{userName: usuario.userName, avatar:avatar, company:company, country:country, tokenTwitter:tokenTwitter, tokenSecretTwitter:tokenSecretTwitter})
         .then(doc => {
             if(doc !== null){
                 return res.status(202).json(doc);
