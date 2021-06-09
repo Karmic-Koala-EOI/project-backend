@@ -8,25 +8,6 @@ const woeid = require('twitter-woeid');
 //Función que devuelve un usuario ya logeado
 const getUser = (req,res) => {
     const owner = req.user.usuario.email;
-    console.log(req.user.usuario);
-    // const { projected } = req.query;
-
-    // if(projected){
-    //     User.findOne({userName:owner})
-    //         .populate('contactsId')
-    //         .select({ contactsId : { $slice : -10}})
-    //         .then(doc => {
-    //             if(typeof doc !== 'null'){
-    //                 user = {
-    //                     userName: doc.userName,
-    //                     email: doc.email
-    //                 }
-    //                 return res.status(200).json(user);
-    //             }
-    //             return res.status(404).send('This user not have contacts');
-    //         })
-    //         .catch(error => res.status(404).send('This user not have contacts'));
-    // } else {
     User.findOne({email:owner})
     .then(doc => {
         if(typeof doc !== 'null'){
@@ -211,8 +192,6 @@ const getTrendingTopics = async (req,res) => {
 
         const T = new Twit(config);
 
-        console.log('Llega por aki');
-
         const resp = await T.get('trends/place',{id: country_code});
         const trends = resp.data[0];
         return res.status(200).json(trends);
@@ -223,43 +202,61 @@ const getTrendingTopics = async (req,res) => {
 
 }
 
-//Función que guarda el id del usuario con fs recibido por query
-const getUserId = (req,res,next) => {
-    console.log("query" + req.query);
-
-    console.log("API  " + process.env.API_KEY);
-    console.log("KEY  " + process.env.API_SECRET_KEY)
-
-    fs.writeFileSync('/tmp/id.json',JSON.stringify({id:req.query.id}));
-    const id = JSON.parse(fs.readFileSync('/tmp/id.json')).id;
-    console.log('id ' + id )
-    next()
-}
-
-//Middleware que comprueba si el usuario está logeado
-const login = (req,res,next) => {
-    const authHeader = req.headers['authorization']
-    const token = authHeader && authHeader.split(' ')[1]
-
-    if (token == null) return res.sendStatus(401)
-
-    jwt.verify(token, process.env.TOKEN_SECRET_KEY, (err, dataStored) => {
-        if (err) return res.status(403).send('The User/Password is not correct');
-        req.user = dataStored;
-        next()
-    })
-}
-
-/**Middleware que comprueba que eres tu para realizar acciones solo 
- * puedes realiazar en tu propia cuenta
+/**
+ * Función que te devuelve los tweets con sus estadistícas,
+ * retweets, likes, etc
  **/
-const isYou = (req,res,next) => {
-    const userLogged = req.user.usuario.email;
+const getTweetsWithStats = async (req,res) => {
 
-    if(req.params.email != userLogged){
-        return res.status(400).send('You cannot modify/delete another user');
-    } else {
-        next();
+    try{
+        const user = await User.findOne({twitterUserName: req.params.twitterUserName});
+        if(!user){
+            return res.status(400).send("This twitter account not exist in database");
+        }
+
+        const config = {
+            consumer_key: process.env.API_KEY,
+            consumer_secret:process.env.API_SECRET_KEY,
+            access_token: user.tokenTwitter, 
+            access_token_secret: user.tokenSecretTwitter,
+            timeout_ms: 60 * 1000,  
+            strictSSL:true
+        }
+
+        const T = new Twit(config);
+        const resp =  await T.get('statuses/user_timeline', { screen_name: user.twitterUserName });
+        const tweets = resp.data;
+
+        //Si quieres añadirle mas datos es solo poner esos en la respuesta de Twitter
+        // id: 1400427396772339700,
+        // id_str: '1400427396772339714',
+
+        const tweetsFormated = tweets.map( tweet => {
+            let tw = {
+                created_at : "",
+                retweet_count: 0,
+                favorite_count: 0
+            }
+
+            if(tweet.text.includes('https') && tweet.text.indexOf('https') !== 0){
+                tw.twitter_link = tweet.text.substring(tweet.text.indexOf('https'),tweet.text.length);
+                tw.text = tweet.text.substring(0,tweet.text.indexOf('https'));
+            } else if(tweet.text.indexOf('https') === 0) {
+                tw.twitter_link = tweet.text.substring(0,tweet.text.length);
+            } else {
+                tw.text = tweet.text;
+            }
+
+            tw.created_at = tweet.created_at;
+            retweet_count = tweet.retweet_count;
+            favorite_count = tweet.favorite_count;
+            return tw;
+        });
+
+        return res.status(200).json(tweetsFormated);
+
+    } catch (err) {
+        return res.status(404).send("Some error appear :)");
     }
 }
 
@@ -269,5 +266,6 @@ module.exports = {
     patchUser,
     changePassword,
     postTweet, 
-    getTrendingTopics
+    getTrendingTopics,
+    getTweetsWithStats
 }

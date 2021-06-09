@@ -14,16 +14,11 @@ const login = (req,res,next) => {
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1];
 
-    console.log('AKI TOKEN--------------------------')
-    console.log(token);
-
     if (token == null) return res.sendStatus(401)
 
     jwt.verify(token, process.env.TOKEN_SECRET_KEY, (err, dataStored) => {
         if (err) return res.status(403).send('The User/Password is not correct');
         req.user = dataStored;
-        console.log("AKI USUARIO--------------------------")
-        console.log(req.user);
         next()
     })
 }

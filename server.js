@@ -23,8 +23,6 @@ dB = NODE_ENV === 'production'
       : MONGO_URL;
 }
 
-console.log(dB);
-
 mongoose.connect(dB, {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -73,7 +71,6 @@ app.post('/register', (req, res) => {
       return res.status(200).json(user)
     })
     .catch(err => {
-      console.log(err);
         return res.status(400).send('This user just exist');
     });
 });
@@ -82,8 +79,6 @@ app.post('/register', (req, res) => {
 app.post('/login', (req, res) => {
     User.findOne({ email: req.body.email })
       .then( usuarioDB => {
-        console.log(usuarioDB);
-      
         // Verifica que exista un usuario con el mail escrita por el usuario.
            if (!usuarioDB) {
               return res.status(400).json({message: "User/password are incorrect"})
@@ -94,8 +89,7 @@ app.post('/login', (req, res) => {
          }
   
           // Genera el token de autenticación y lo guardamos
-          console.log('Todo bien');
-          console.log(process.env.TOKEN_SECRET_KEY);
+
           let token = jwt.sign({ usuario: usuarioDB }, process.env.TOKEN_SECRET_KEY);
 
           res.json({
