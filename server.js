@@ -101,7 +101,7 @@ app.post('/login', (req, res) => {
           res.json({
             usuario: usuarioDB,
             token,
-          })
+          });
   
       })
       .catch(erro =>  {
