@@ -122,8 +122,8 @@ const postTweet = async (req,res) => {
         if(typeof user.tokenSecretTwitter === 'undefined' || typeof user.tokenTwitter === 'undefined'){
             return res.status(400).send('This user not have a twitter account linked')
 
-        } else if( message === '' || typeof message === 'undefined'){
-            return res.status(400).send('The message is empty');
+        } else if((message === '' || typeof message === undefined) && (photo_url === '' || typeof photo_url === undefined)){
+            return res.status(400).send('Message and photo is empty');
         }
 
         const { tokenTwitter, tokenSecretTwitter} = user;
@@ -140,10 +140,10 @@ const postTweet = async (req,res) => {
 
         const T = new Twit(config);
 
-        if((typeof photo_url !== 'undefined') && (photo_url !== '')){
+        if((photo_url !== undefined) && (photo_url !== '')){
             
                 //Codificamos la imagen en 64
-                const b64content = fs.readFileSync('koala_crazy.jpeg', { encoding: 'base64' })
+                const b64content = photo_url;
     
                 // Cargamos el fichero de video/imagen
                 T.post('media/upload', { media_data: b64content }, function (err, data, response) {
