@@ -33,6 +33,46 @@ test('Login Classic User', async () => {
             .expect('Content-Type', /application\/json/);
 });
 
+test('Login Classic User with incorrect password', async () => {
+    const userLogin = {
+        email: 'pepe@gmail.com',
+        password: '#Pepe2#'
+    }
+
+    await api
+            .post('/login')
+            .send(userLogin)
+            .expect(400)
+            .expect('Content-Type', /text\/html/);
+});
+
+test('Login Classic User with an email that not exist', async () => {
+    const userLogin = {
+        email: 'pepegmail.com',
+        password: '#Pepe21#'
+    }
+
+    await api
+            .post('/login')
+            .send(userLogin)
+            .expect(400)
+            .expect('Content-Type', /text\/html/);
+});
+
+test('Login Classic User with an email that not exist', async () => {
+    const userLogin = {
+        email: 'pepegmail.com',
+        password: '#Pepe21#'
+    }
+
+    await api
+            .post('/login')
+            .send(userLogin)
+            .expect(400)
+            .expect('Content-Type', /text\/html/);
+});
+
+
 //Cerramos Mongo y Server
 afterAll( () => {
     server.close();

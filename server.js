@@ -81,7 +81,7 @@ app.post('/login', (req, res) => {
       .then( usuarioDB => {
         // Verifica que exista un usuario con el mail escrita por el usuario.
            if (!usuarioDB) {
-              return res.status(400).json({message: "User/password are incorrect"})
+              return res.status(400).send("User/password are incorrect")
            }
           // Valida que la contraseña escrita por el usuario, sea la almacenada en la db
          if (! bcrypt.compareSync(req.body.password, usuarioDB.password)){
@@ -91,6 +91,8 @@ app.post('/login', (req, res) => {
           // Genera el token de autenticación y lo guardamos
 
           let token = jwt.sign({ usuario: usuarioDB }, process.env.TOKEN_SECRET_KEY);
+          let response = {usuario: usuarioDB,token}
+          console.log(req.body.email);
 
           res.json({
             usuario: usuarioDB,
