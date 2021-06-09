@@ -12,10 +12,18 @@ const googleAuth = require('./api/passport_config/googleAuth');
 const twitterAuth = require('./api/passport_config/twitterAuth');
 
 const {MONGO_URL, MONGO_TEST, MONGO_PROD, NODE_ENV} = process.env;
-const dB = NODE_ENV === 'production' 
+
+var dB;
+
+if(NODE_ENV === 'test'){
+dB = MONGO_TEST;
+} else {
+dB = NODE_ENV === 'production' 
       ? MONGO_PROD
       : MONGO_URL;
+}
 
+console.log(dB);
 
 mongoose.connect(MONGO_PROD, {
     useNewUrlParser: true,
@@ -106,6 +114,11 @@ app.use('/',userRouter);
 app.use('/',socialRouter);
 
 //Server puesto a la escucha
-app.listen(PORT,() => {
+const server = app.listen(PORT,() => {
     console.log(`Server listen on port ${PORT}`);
-})
+});
+
+module.exports = {
+  app,
+  server
+}
