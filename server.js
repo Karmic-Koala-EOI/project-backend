@@ -64,7 +64,8 @@ app.post('/register', (req, res) => {
       email,
       password: bcrypt.hashSync(password, 10),
       _id: new mongoose.Types.ObjectId,
-      provider: 'email'
+      provider: 'email',
+      country: 'Global'
     })
     .then(user => {
       delete user.password;
