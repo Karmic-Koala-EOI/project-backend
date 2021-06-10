@@ -18,7 +18,8 @@ const getUser = (req,res) => {
                 email: doc.email,
                 twitterLogged: twitterLogged,
                 company: doc.company,
-                country: doc.country
+                country: doc.country,
+                twitterUserName: doc.twitterUserName
             }
             return res.status(200).json(user);
         }
@@ -250,8 +251,8 @@ const getTweetsWithStats = async (req,res) => {
             }
 
             tw.created_at = tweet.created_at;
-            retweet_count = tweet.retweet_count;
-            favorite_count = tweet.favorite_count;
+            tw.retweet_count = tweet.retweet_count;
+            tw.favorite_count = tweet.favorite_count;
             return tw;
         });
 
