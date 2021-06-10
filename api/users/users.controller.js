@@ -156,7 +156,7 @@ const postTweet = async (req,res) => {
         }
 
        //Post de un tweet con texto plano
-        T.post('statuses/update', { status: message }, function(err, data, res) {
+        T.post('statuses/user_timeline', { status: message, count: 200}, function(err, data, res) {
             if (err){
                 console.log("oops, didn't tweet: ", err.message)
             }
