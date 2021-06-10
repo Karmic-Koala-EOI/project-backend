@@ -12,7 +12,7 @@ const getUserId = (req,res,next) => {
 //Middleware que comprueba si el usuario está logeado
 const login = (req,res,next) => {
     const authHeader = req.headers['authorization']
-    const token = authHeader && authHeader.split(' ')[1]
+    const token = authHeader && authHeader.split(' ')[1];
 
     if (token == null) return res.sendStatus(401)
 

@@ -17,7 +17,7 @@ passport.use("sign-in-google",new GoogleStrategy(
     {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
-      callbackURL: "https://karmic-koala-backend.vercel.app/auth/google/callback",
+      callbackURL: "http://localhost:3000/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       const user = await User.findById(profile.id);
@@ -35,7 +35,7 @@ passport.use("sign-in-google",new GoogleStrategy(
            } catch(err) {
              done('These email just exist',false,'These email just exist');
            }
-        done(null, profile); //guardamos en la base de datos
+        done(null, newUser); //guardamos en la base de datos
       }
     }
   )
@@ -47,7 +47,7 @@ passport.use("sign-up-google",new GoogleStrategy(
       {
         clientID: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
-        callbackURL: "https://karmic-koala-backend.vercel.app/auth/google/login",
+        callbackURL: "http://localhost:3000/auth/google/login",
       },
       async (accessToken, refreshToken, profile, done) => {
         const user = await User.findById(profile.id);

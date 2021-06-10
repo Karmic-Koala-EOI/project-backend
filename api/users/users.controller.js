@@ -8,24 +8,6 @@ const woeid = require('twitter-woeid');
 //Función que devuelve un usuario ya logeado
 const getUser = (req,res) => {
     const owner = req.user.usuario.email;
-    // const { projected } = req.query;
-
-    // if(projected){
-    //     User.findOne({userName:owner})
-    //         .populate('contactsId')
-    //         .select({ contactsId : { $slice : -10}})
-    //         .then(doc => {
-    //             if(typeof doc !== 'null'){
-    //                 user = {
-    //                     userName: doc.userName,
-    //                     email: doc.email
-    //                 }
-    //                 return res.status(200).json(user);
-    //             }
-    //             return res.status(404).send('This user not have contacts');
-    //         })
-    //         .catch(error => res.status(404).send('This user not have contacts'));
-    // } else {
     User.findOne({email:owner})
     .then(doc => {
         if(typeof doc !== 'null'){
@@ -36,7 +18,8 @@ const getUser = (req,res) => {
                 email: doc.email,
                 twitterLogged: twitterLogged,
                 company: doc.company,
-                country: doc.country
+                country: doc.country,
+                twitterUserName: doc.twitterUserName
             }
             return res.status(200).json(user);
         }
@@ -66,14 +49,16 @@ const deleteUser = (req,res) => {
 /**Función que modifica la cuenta de un usuario ya logeado,
  * le puede cambiar el userName,email, avatar y company
  **/
-const patchUser = (req,res) => {
+ const patchUser = (req,res) => {
     const userLoggedEmail = req.user.usuario.email;
     const usuario = req.body; 
     const avatar = usuario.avatar || req.user.usuario.avatar || '';
-    const company = usuario.company || '';
-    const country = usuario.country || '';
+    const company = usuario.company || req.user.usuario.company || '';
+    const country = usuario.country || req.user.usuario.country || '';
+    const tokenTwitter = usuario.tokenTwitter || req.user.usuario.tokenTwitter || '';
+    const tokenSecretTwitter = usuario.tokenSecretTwitter || req.user.usuario.tokenSecretTwitter || '';
 
-    User.findOneAndUpdate({email:userLoggedEmail},{userName: usuario.userName, avatar:avatar, company:company, country:country})
+    User.findOneAndUpdate({email:userLoggedEmail},{userName: usuario.userName, avatar:avatar, company:company, country:country, tokenTwitter:tokenTwitter, tokenSecretTwitter:tokenSecretTwitter})
         .then(doc => {
             if(doc !== null){
                 return res.status(202).json(doc);
@@ -122,8 +107,8 @@ const postTweet = async (req,res) => {
         if(typeof user.tokenSecretTwitter === 'undefined' || typeof user.tokenTwitter === 'undefined'){
             return res.status(400).send('This user not have a twitter account linked')
 
-        } else if( message === '' || typeof message === 'undefined'){
-            return res.status(400).send('The message is empty');
+        } else if((message === '' || typeof message === undefined) && (photo_url === '' || typeof photo_url === undefined)){
+            return res.status(400).send('Message and photo is empty');
         }
 
         const { tokenTwitter, tokenSecretTwitter} = user;
@@ -140,10 +125,10 @@ const postTweet = async (req,res) => {
 
         const T = new Twit(config);
 
-        if((typeof photo_url !== 'undefined') && (photo_url !== '')){
+        if((photo_url !== undefined) && (photo_url !== '')){
             
                 //Codificamos la imagen en 64
-                const b64content = fs.readFileSync('koala_crazy.jpeg', { encoding: 'base64' })
+                const b64content = photo_url;
     
                 // Cargamos el fichero de video/imagen
                 T.post('media/upload', { media_data: b64content }, function (err, data, response) {
@@ -210,8 +195,6 @@ const getTrendingTopics = async (req,res) => {
 
         const T = new Twit(config);
 
-        console.log('Llega por aki');
-
         const resp = await T.get('trends/place',{id: country_code});
         const trends = resp.data[0];
         return res.status(200).json(trends);
@@ -221,6 +204,63 @@ const getTrendingTopics = async (req,res) => {
     }
 
 }
+/**
+ * Función que te devuelve los tweets con sus estadistícas,
+ * retweets, likes, etc
+ **/
+const getTweetsWithStats = async (req,res) => {
+
+    try{
+        const user = await User.findOne({twitterUserName: req.params.twitterUserName});
+        if(!user){
+            return res.status(400).send("This twitter account not exist in database");
+        }
+
+        const config = {
+            consumer_key: process.env.API_KEY,
+            consumer_secret:process.env.API_SECRET_KEY,
+            access_token: user.tokenTwitter, 
+            access_token_secret: user.tokenSecretTwitter,
+            timeout_ms: 60 * 1000,  
+            strictSSL:true
+        }
+
+        const T = new Twit(config);
+        const resp =  await T.get('statuses/user_timeline', { screen_name: user.twitterUserName });
+        const tweets = resp.data;
+
+        //Si quieres añadirle mas datos es solo poner esos en la respuesta de Twitter
+        // id: 1400427396772339700,
+        // id_str: '1400427396772339714',
+
+        const tweetsFormated = tweets.map( tweet => {
+            let tw = {
+                created_at : "",
+                retweet_count: 0,
+                favorite_count: 0
+            }
+
+            if(tweet.text.includes('https') && tweet.text.indexOf('https') !== 0){
+                tw.twitter_link = tweet.text.substring(tweet.text.indexOf('https'),tweet.text.length);
+                tw.text = tweet.text.substring(0,tweet.text.indexOf('https'));
+            } else if(tweet.text.indexOf('https') === 0) {
+                tw.twitter_link = tweet.text.substring(0,tweet.text.length);
+            } else {
+                tw.text = tweet.text;
+            }
+
+            tw.created_at = tweet.created_at;
+            tw.retweet_count = tweet.retweet_count;
+            tw.favorite_count = tweet.favorite_count;
+            return tw;
+        });
+
+        return res.status(200).json(tweetsFormated);
+
+    } catch (err) {
+        return res.status(404).send("Some error appear :)");
+    }
+}
 
 module.exports = {
     getUser,
@@ -228,5 +268,6 @@ module.exports = {
     patchUser,
     changePassword,
     postTweet, 
-    getTrendingTopics
+    getTrendingTopics,
+    getTweetsWithStats
 }

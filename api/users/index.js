@@ -11,7 +11,6 @@ const { serialize } = require('cookie');
 
 router.get("/auth/google/callback",passport.authenticate("sign-in-google", {scope: ['https://www.googleapis.com/auth/plus.login','email'], session: false }),
   function (req, res) {
-    console.log("Registro de Google 1");
     if (req.user) {
       const token = jwt.sign({usuario: req.user}, process.env.TOKEN_SECRET_KEY, {
         expiresIn: 60 * 60 * 24 // equivalente a 24 horas
@@ -22,9 +21,8 @@ router.get("/auth/google/callback",passport.authenticate("sign-in-google", {scop
       console.log("Registro de Google 2");
       console.log(token);
       res.cookie('session', token).redirect('https://karmickoala.vercel.app') //rutas por definir
-
     } else {
-      res.redirect('https://karmickoala.vercel.app/register')
+      res.redirect('http://localhost:4200/register')
     }
   }
 );
@@ -35,7 +33,6 @@ router.get(
   "/auth/google/login",
   passport.authenticate("sign-up-google", {scope: ['https://www.googleapis.com/auth/plus.login','email'], session: false }),
   async function (req, res) {
-    console.log("Login de Google 1");
     if (req.user) { 
       const token = jwt.sign({usuario: req.user}, process.env.TOKEN_SECRET_KEY, {
         expiresIn: 60 * 60 * 24 // Token que expira a las 24h, pero se puede modificar
@@ -49,11 +46,12 @@ router.get(
 
     } else {
   
-      res.redirect('https://karmickoala.vercel.app/login')
+      res.redirect('http://localhost:4200/login')
     } 
   }
 );
 
+router.get('/tweets/:twitterUserName', userController.getTweetsWithStats);
 router.get('/tweets/trending/:country', userController.getTrendingTopics);
 router.post('/postTweet',userController.postTweet);
 router.get('/auth/twitter',userMiddlewares.getUserId,passport.authenticate('sign-up-twitter',{session:false}));

@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "dev": "NODE_ENV=development nodemon server.js",
-    "prod": "NODE_ENV=production nodemon server.js"
+    "test": "NODE_ENV=test jest --forceExit --verbose --silent --maxWorkers=1",
+    "test:watch": "npm run test -- --watchAll",
+    "prod": "NODE_ENV=production node server.js"
   },
   "repository": {
     "type": "git",

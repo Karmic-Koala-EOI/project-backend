@@ -13,12 +13,18 @@ const twitterAuth = require('./api/passport_config/twitterAuth');
 const cookieParser = require('cookie-parser');
 
 const {MONGO_URL, MONGO_TEST, MONGO_PROD, NODE_ENV} = process.env;
-const dB = NODE_ENV === 'production' 
+
+var dB;
+
+if(NODE_ENV === 'test'){
+dB = MONGO_TEST;
+} else {
+dB = NODE_ENV === 'production' 
       ? MONGO_PROD
       : MONGO_URL;
+}
 
-
-mongoose.connect(MONGO_PROD, {
+mongoose.connect(dB, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
@@ -60,14 +66,14 @@ app.post('/register', (req, res) => {
       email,
       password: bcrypt.hashSync(password, 10),
       _id: new mongoose.Types.ObjectId,
-      provider: 'email'
+      provider: 'email',
+      country: 'Global'
     })
     .then(user => {
       delete user.password;
       return res.status(200).json(user)
     })
     .catch(err => {
-      console.log(err);
         return res.status(400).send('This user just exist');
     });
 });
@@ -76,11 +82,9 @@ app.post('/register', (req, res) => {
 app.post('/login', (req, res) => {
     User.findOne({ email: req.body.email })
       .then( usuarioDB => {
-        console.log(usuarioDB);
-      
         // Verifica que exista un usuario con el mail escrita por el usuario.
            if (!usuarioDB) {
-              return res.status(400).json({message: "User/password are incorrect"})
+              return res.status(400).send("User/password are incorrect")
            }
           // Valida que la contraseña escrita por el usuario, sea la almacenada en la db
          if (! bcrypt.compareSync(req.body.password, usuarioDB.password)){
@@ -88,14 +92,15 @@ app.post('/login', (req, res) => {
          }
   
           // Genera el token de autenticación y lo guardamos
-          console.log('Todo bien');
-          console.log(process.env.TOKEN_SECRET_KEY);
+
           let token = jwt.sign({ usuario: usuarioDB }, process.env.TOKEN_SECRET_KEY);
+          let response = {usuario: usuarioDB,token}
+          console.log(req.body.email);
 
           res.json({
             usuario: usuarioDB,
             token,
-          })
+          });
   
       })
       .catch(erro =>  {
@@ -108,6 +113,11 @@ app.use('/',userRouter);
 app.use('/',socialRouter);
 
 //Server puesto a la escucha
-app.listen(PORT,() => {
+const server = app.listen(PORT,() => {
     console.log(`Server listen on port ${PORT}`);
-})
+});
+
+module.exports = {
+  app,
+  server
+}
