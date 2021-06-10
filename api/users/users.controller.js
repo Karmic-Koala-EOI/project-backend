@@ -156,7 +156,7 @@ const postTweet = async (req,res) => {
         }
 
        //Post de un tweet con texto plano
-        T.post('statuses/user_timeline', { status: message, count: 200}, function(err, data, res) {
+        T.post('statuses/update', { status: message }, function(err, data, res) {
             if (err){
                 console.log("oops, didn't tweet: ", err.message)
             }
@@ -226,7 +226,7 @@ const getTweetsWithStats = async (req,res) => {
         }
 
         const T = new Twit(config);
-        const resp =  await T.get('statuses/user_timeline', { screen_name: user.twitterUserName });
+        const resp =  await T.get('statuses/user_timeline', { screen_name: user.twitterUserName, count: 200 });
         const tweets = resp.data;
 
         //Si quieres añadirle mas datos es solo poner esos en la respuesta de Twitter
