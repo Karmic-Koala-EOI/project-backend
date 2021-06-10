@@ -204,7 +204,6 @@ const getTrendingTopics = async (req,res) => {
     }
 
 }
-
 /**
  * Función que te devuelve los tweets con sus estadistícas,
  * retweets, likes, etc
