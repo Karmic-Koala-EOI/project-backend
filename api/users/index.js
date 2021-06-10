@@ -22,7 +22,7 @@ router.get("/auth/google/callback",passport.authenticate("sign-in-google", {scop
       console.log(token);
       res.cookie('session', token).redirect('https://karmickoala.vercel.app') //rutas por definir
     } else {
-      res.redirect('http://localhost:4200/register')
+      res.redirect('https://karmickoala.vercel.app/register')
     }
   }
 );
@@ -46,7 +46,7 @@ router.get(
 
     } else {
   
-      res.redirect('http://localhost:4200/login')
+      res.redirect('https://karmickoala.vercel.app/login')
     } 
   }
 );
