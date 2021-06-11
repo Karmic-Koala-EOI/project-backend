@@ -19,8 +19,8 @@ router.get("/auth/google/callback",passport.authenticate("sign-in-google", {scop
       const cookie = serialize('session', token, {httpOnly: true})
       res.setHeader('Set-Cookie',[cookie])
       console.log("Registro de Google 2");
-      console.log(req.user);
-      res.redirect(`https://karmickoala.vercel.app?google=${token}?id=${req.user._id}`) //rutas por definir
+      console.log(req.user._id);
+      res.redirect(`https://karmickoala.vercel.app?google=${token}&id=${req.user._id}`) //rutas por definir
     } else {
       res.redirect('https://karmickoala.vercel.app/register')
     }
@@ -42,7 +42,7 @@ router.get(
       res.setHeader('Set-Cookie',[cookie])
       console.log("Login de Google 2");
       console.log(token);
-      res.redirect(`https://karmickoala.vercel.app?google=${token}?id=${req.user._id}`) //rutas por definir
+      res.redirect(`https://karmickoala.vercel.app?google=${token}&id=${req.user._id}`) //rutas por definir
 
     } else {
   
