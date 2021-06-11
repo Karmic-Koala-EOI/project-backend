@@ -3,6 +3,7 @@ const passport = require("passport");
 const jwt = require("jsonwebtoken");
 const userController = require('./users.controller');
 const userMiddlewares = require('../middlewares/user.middlewares');
+const { serialize } = require('cookie');
 
 //rutas para Google
 
@@ -15,10 +16,13 @@ router.get("/auth/google/callback",passport.authenticate("sign-in-google", {scop
         expiresIn: 60 * 60 * 24 // equivalente a 24 horas
       })
       res.cookie('session', token);
-      res.redirect('http://localhost:4200') //rutas por definir
-
+      const cookie = serialize('session', token, {httpOnly: true})
+      res.setHeader('Set-Cookie',[cookie])
+      console.log("Registro de Google 2");
+      console.log(token);
+      res.redirect(`https://karmickoala.vercel.app?token=${token}`) //rutas por definir
     } else {
-      res.redirect('http://localhost:4200/register')
+      res.redirect('https://karmickoala.vercel.app/register')
     }
   }
 );
@@ -34,11 +38,15 @@ router.get(
         expiresIn: 60 * 60 * 24 // Token que expira a las 24h, pero se puede modificar
       })
       res.cookie('session', token);
-      res.redirect('http://localhost:4200') //rutas por definir
+      const cookie = serialize('session', token, {httpOnly: true})
+      res.setHeader('Set-Cookie',[cookie])
+      console.log("Login de Google 2");
+      console.log(token);
+      res.redirect(`https://karmickoala.vercel.app?token=${token}`) //rutas por definir
 
     } else {
   
-      res.redirect('http://localhost:4200/login')
+      res.redirect('https://karmickoala.vercel.app/login')
     } 
   }
 );
@@ -47,12 +55,11 @@ router.get('/tweets/:twitterUserName', userController.getTweetsWithStats);
 router.get('/tweets/trending/:country', userController.getTrendingTopics);
 router.post('/postTweet',userController.postTweet);
 router.get('/auth/twitter',userMiddlewares.getUserId,passport.authenticate('sign-up-twitter',{session:false}));
-
 router.get('/auth/twitter/login', 
   passport.authenticate('sign-up-twitter', { failureRedirect: '/login' }),
   function(req, res) {
     // Successful authentication, redirect home.
-    res.redirect('http://localhost:4200/dashboard/social-media-accounts');
+    res.redirect('https://karmickoala.vercel.app/dashboard/social-media-accounts');
     //Ruta frontend ---> http://localhost:4200/dashboard/social-media-accounts
   });
 router.get('/', userMiddlewares.login,userController.getUser);
