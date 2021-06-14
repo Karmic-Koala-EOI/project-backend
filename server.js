@@ -11,6 +11,7 @@ const jwt = require('jsonwebtoken');
 const googleAuth = require('./api/passport_config/googleAuth');
 const twitterAuth = require('./api/passport_config/twitterAuth');
 const cookieParser = require('cookie-parser');
+const botDiscord = require('./api/diffusion/botTwitter');
 
 const {MONGO_URL, MONGO_TEST, MONGO_PROD, NODE_ENV} = process.env;
 
@@ -115,6 +116,7 @@ app.use('/',socialRouter);
 //Server puesto a la escucha
 const server = app.listen(PORT,() => {
     console.log(`Server listen on port ${PORT}`);
+    botDiscord
 });
 
 module.exports = {
