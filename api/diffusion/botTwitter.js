@@ -39,10 +39,10 @@ bot.on("message", async message => {
 async function getTweet() {
 
     const config = {
-        consumer_key: 'XQWsX0Q71ia0jnF5CnLiLB7rC',
-        consumer_secret: 'VijoBdIy6gL8hkYAIO59lfZa71QiECPCjBl55d8WuJKDSAC3tR',
-        access_token: '1399639642186686466-IluKnq8pxgkh9LZuaVAbDWtTLrMpgR', 
-        access_token_secret: 'ZxFAxVtpysi83kdgjDfj9C9GXOjQsm30559MuPr1tu7oZ',
+        consumer_key: process.env.API_KEY,
+        consumer_secret:process.env.API_SECRET_KEY,
+        access_token: user.tokenTwitter, 
+        access_token_secret: user.tokenSecretTwitter,
         timeout_ms: 60 * 1000,  
         strictSSL:true
     }
@@ -82,4 +82,4 @@ function card(UserName,textTweet) {
 }
 
 
-bot.login("ODUxODUwMjI4OTM5NzUxNDU0.YL-RWQ.VsvGcGTQkV53Qg-fUuDMp4t-P-8");
+bot.login(process.env.TOKEN_DISCORD);
