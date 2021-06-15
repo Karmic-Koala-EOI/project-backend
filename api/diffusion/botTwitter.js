@@ -27,9 +27,9 @@ bot.on("message", async message => {
     const command = message.content.toLowerCase();
 
     if (command === "/tweets") {
+        getTweet();
         tweets1.forEach( x => {
-            message.channel.send(`${x.created_at} \n ${x.text}`);
-            //
+            message.channel.send(card(x.owner,`${x.created_at} \n ${x.text} \n likes: ${x.likes} \n retweets: ${x.retweet}`,x.img[0]));
         })
         return;
     }
@@ -55,12 +55,28 @@ async function getTweet() {
     const tweets = call.data;
 
     const tweetsFiltered = tweets.map( tweet => {
+
+        let media = tweet.entities.media;
+
         let tw = {
+            owner : "",
             created_at : "",
-            text : ""
+            text : "",
+            img : "",
+            likes : 0,
+            retweet: 0
         }
+        tw.owner = tweet.user.name;
         tw.created_at = tweet.created_at;
         tw.text = tweet.text;
+        tw.likes = tweet.favorite_count;
+        tw.retweet = tweet.retweet_count;
+
+        if(media !== undefined) {
+            tw.img = media.map( x => x.media_url);
+        }
+
+        console.log(tweet);
 
         return tw;
     });
@@ -68,18 +84,16 @@ async function getTweet() {
     tweets1 = tweetsFiltered;
 }
 
-function card(UserName,textTweet) {
+function card(UserName,textTweet,picture) {
     const embed = new MessageEmbed()
         // Set the title of the field
         .setTitle(UserName)
-        //.setImage(picture)
+        .setImage(picture)
         // Set the color of the embed
         .setColor(0xff0000)
         // Set the main content of the embed
         .setDescription(textTweet);
     return embed;
-
 }
-
 
 bot.login(process.env.TOKEN_DISCORD);
