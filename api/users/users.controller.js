@@ -145,10 +145,13 @@ const postTweet = async (req,res) => {
                                 if (err){
                                     console.log("oops, didn't tweet: ", err.message)
                                 }
+                                console.log(res);
                                 return res;
+                                
                             })
                         }
                     })
+                    console.log(response);
                     return response;
                 })
                 return res.status(200).send('Post tweet with image');
@@ -160,6 +163,7 @@ const postTweet = async (req,res) => {
             if (err){
                 console.log("oops, didn't tweet: ", err.message)
             }
+            console.log(res);
             return res;
         });
 

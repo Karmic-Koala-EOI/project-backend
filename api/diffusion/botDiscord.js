@@ -1,9 +1,9 @@
-const disc = require('discord.js');
+const Discord = require('discord.js');
 const Twit = require('twit');
 
 const { MessageEmbed } = require('discord.js');
 
-const bot = new disc.Client();
+const bot = new Discord.Client();
 
 var tweets1 = []
 
@@ -28,10 +28,14 @@ bot.on("message", async message => {
 
     if (command === "/tweets") {
         getTweet();
-        tweets1.forEach( x => {
-            message.channel.send(card(x.owner,`${x.created_at} \n ${x.text} \n likes: ${x.likes} \n retweets: ${x.retweet}`,x.img[0]));
-        })
-        return;
+
+        for (let index = 0; index < 5; index++) {
+            message.channel.send(card(tweets1[index].owner,`${tweets1[index].created_at} \n ${tweets1[index].text} \n likes: ${tweets1[index].likes} \n retweets: ${tweets1[index].retweet}`,tweets1[index].img[0]));
+        }
+        // tweets1.forEach( x => {
+        //     message.channel.send(card(x.owner,`${x.created_at} \n ${x.text} \n likes: ${x.likes} \n retweets: ${x.retweet}`,x.img[0]));
+        // })
+        // return;
     }
     
 })
@@ -40,8 +44,8 @@ async function getTweet() {
 
     const config = {
         consumer_key: process.env.API_KEY,
-        consumer_secret:process.env.API_SECRET_KEY,
-        access_token: user.tokenTwitter, 
+        consumer_secret: process.env.API_SECRET_KEY,
+        access_token:  user.tokenTwitter, 
         access_token_secret: user.tokenSecretTwitter,
         timeout_ms: 60 * 1000,  
         strictSSL:true
@@ -75,8 +79,6 @@ async function getTweet() {
         if(media !== undefined) {
             tw.img = media.map( x => x.media_url);
         }
-
-        console.log(tweet);
 
         return tw;
     });
