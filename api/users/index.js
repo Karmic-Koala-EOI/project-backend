@@ -20,7 +20,11 @@ router.get("/auth/google/callback",passport.authenticate("sign-in-google", {scop
       res.setHeader('Set-Cookie',[cookie])
       console.log("Registro de Google 2");
       console.log(token);
+<<<<<<< HEAD
       res.redirect(`https://karmickoala.vercel.app?token=${token}`) //rutas por definir
+=======
+      res.cookie('session', token).redirect('http://localhost:4200') //rutas por definir
+>>>>>>> 8eda11736892029e80389ef3779119234cb75428
     } else {
       res.redirect('https://karmickoala.vercel.app/register')
     }
@@ -42,7 +46,8 @@ router.get(
       res.setHeader('Set-Cookie',[cookie])
       console.log("Login de Google 2");
       console.log(token);
-      res.redirect(`https://karmickoala.vercel.app?token=${token}`) //rutas por definir
+      res.redirect(`http://localhost:4200?token=${token}`) //rutas por definir
+
 
     } else {
   
@@ -58,6 +63,7 @@ router.get('/auth/twitter',userMiddlewares.getUserId,passport.authenticate('sign
 router.get('/auth/twitter/login', 
   passport.authenticate('sign-up-twitter', { failureRedirect: '/login' }),
   function(req, res) {
+    console.log("Esto es el index");
     // Successful authentication, redirect home.
     res.redirect('http://localhost:4200/dashboard/profile');
     //Ruta frontend ---> http://localhost:4200/dashboard/social-media-accounts
