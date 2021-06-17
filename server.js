@@ -56,7 +56,7 @@ app.post('/register', (req, res) => {
 
       return res.status(400).send('The password is empty');
 
-    } else if(!password.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/)){
+    } else if(!password.match(/^(?=(?:.\d))(?=(?:.[A-Z]))(?=(?:.*[a-z]))\S{8,15}$/)){
 
       return res.status(400).send('The security of the password is low');
     }
