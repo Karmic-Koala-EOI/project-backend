@@ -1,20 +1,27 @@
 const Discord = require('discord.js');
 const Twit = require('twit');
+const {getUser} = require('../users/users.controller');
 
 const { MessageEmbed } = require('discord.js');
 
 const bot = new Discord.Client();
+var stop = 0;
 
 var tweets1 = []
 
+
+
 bot.on("ready", () => {
     console.log("Tu bot (" + bot.user.tag + ") ahora se encuentra en línea!");
-    getTweet();
 })
 
 bot.on("message", async message => {
 
-    const command = message.content.toLowerCase();
+    const entry = message.content.trim().split(/ +/g);
+    const command = entry.shift().toLowerCase();
+    stop = entry.pop();
+
+    //const command = message.content.toLowerCase();
 
     if (command === "/hola") {
         message.channel.send("**Hola! Tu bot está perfectamente recibiendo mensajes.**");
@@ -23,13 +30,18 @@ bot.on("message", async message => {
 })
 
 bot.on("message", async message => {
+
+    await getTweet();
     
-    const command = message.content.toLowerCase();
+    const entry = message.content.trim().split(/ +/g);
+    const command = entry.shift().toLowerCase();
+    stop = entry.pop();
 
+    
+    
     if (command === "/tweets") {
-        getTweet();
-
-        for (let index = 0; index < 5; index++) {
+        
+        for (let index = 0; index < stop; index++) {
             message.channel.send(card(tweets1[index].owner,`${tweets1[index].created_at} \n ${tweets1[index].text} \n likes: ${tweets1[index].likes} \n retweets: ${tweets1[index].retweet}`,tweets1[index].img[0]));
         }
         // tweets1.forEach( x => {
@@ -45,12 +57,17 @@ async function getTweet() {
     const config = {
         consumer_key: process.env.API_KEY,
         consumer_secret: process.env.API_SECRET_KEY,
-        access_token:  user.tokenTwitter, 
-        access_token_secret: user.tokenSecretTwitter,
+        access_token:  process.env.ACCESS_TOKEN, 
+        access_token_secret: process.env.ACCESS_TOKEN_SECRET,
         timeout_ms: 60 * 1000,  
         strictSSL:true
     }
 
+    // const user = getUser()
+    // if(user){
+    //     console.log(user);
+    // }
+    
     const twits = new Twit(config);
 
     const userName = 'KarmicKoala1';
