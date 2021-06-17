@@ -17,7 +17,7 @@ bot.hears('Tweets', async ctx => {
 
     await getTweet();
     tweets1.forEach( x => {
-        bot.telegram.sendMessage(ctx.chat.id,`${x.owner} \n ${x.created_at} \n ${x.text} \n ${x.img} \n ${x.likes} \n ${x.retweet}`);
+        bot.telegram.sendMessage(ctx.chat.id,` --------------- \n ${x.owner} \n creado: ${x.created_at} \n ${x.text} \n ${x.img} \n Likes: ${x.likes} \n Retweets: ${x.retweet} \n ---------------`);
         console.log(x);
     })
 })

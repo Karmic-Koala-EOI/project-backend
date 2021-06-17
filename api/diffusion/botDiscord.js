@@ -21,8 +21,6 @@ bot.on("message", async message => {
     const command = entry.shift().toLowerCase();
     stop = entry.pop();
 
-    //const command = message.content.toLowerCase();
-
     if (command === "/hola") {
         message.channel.send("**Hola! Tu bot está perfectamente recibiendo mensajes.**");
         return;
@@ -40,14 +38,16 @@ bot.on("message", async message => {
     
     
     if (command === "/tweets") {
-        
-        for (let index = 0; index < stop; index++) {
-            message.channel.send(card(tweets1[index].owner,`${tweets1[index].created_at} \n ${tweets1[index].text} \n likes: ${tweets1[index].likes} \n retweets: ${tweets1[index].retweet}`,tweets1[index].img[0]));
+
+        if(stop === undefined) {
+            tweets1.forEach( x => {
+                message.channel.send(card(x.owner,`${x.created_at} \n ${x.text} \n likes: ${x.likes} \n retweets: ${x.retweet}`,x.img[0]));
+            })
+        } else {
+            for (let index = 0; index < stop; index++) {
+                message.channel.send(card(tweets1[index].owner,`${tweets1[index].created_at} \n ${tweets1[index].text} \n likes: ${tweets1[index].likes} \n retweets: ${tweets1[index].retweet}`,tweets1[index].img[0]));
+            }
         }
-        // tweets1.forEach( x => {
-        //     message.channel.send(card(x.owner,`${x.created_at} \n ${x.text} \n likes: ${x.likes} \n retweets: ${x.retweet}`,x.img[0]));
-        // })
-        // return;
     }
     
 })
