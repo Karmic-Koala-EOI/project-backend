@@ -57,8 +57,9 @@ const deleteUser = (req,res) => {
     const country = usuario.country || req.user.usuario.country || '';
     const tokenTwitter = usuario.tokenTwitter || req.user.usuario.tokenTwitter || '';
     const tokenSecretTwitter = usuario.tokenSecretTwitter || req.user.usuario.tokenSecretTwitter || '';
+    const twitterUserName = usuario.twitterUserName || req.user.usuario.twitterUserName || '';
 
-    User.findOneAndUpdate({email:userLoggedEmail},{userName: usuario.userName, avatar:avatar, company:company, country:country, tokenTwitter:tokenTwitter, tokenSecretTwitter:tokenSecretTwitter})
+    User.findOneAndUpdate({email:userLoggedEmail},{userName: usuario.userName, avatar:avatar, company:company, country:country, tokenTwitter:tokenTwitter, tokenSecretTwitter:tokenSecretTwitter, twitterUserName:twitterUserName})
         .then(doc => {
             if(doc !== null){
                 return res.status(202).json(doc);
@@ -211,8 +212,12 @@ const getTrendingTopics = async (req,res) => {
 const getTweetsWithStats = async (req,res) => {
 
     try{
+        console.log("antes del user");
         const user = await User.findOne({twitterUserName: req.params.twitterUserName});
+        console.log("DESPUÉS del user");
+        console.log(user);
         if(!user){
+            console.log("no hay usuario");
             return res.status(400).send("This twitter account not exist in database");
         }
 
@@ -226,6 +231,8 @@ const getTweetsWithStats = async (req,res) => {
         }
 
         const T = new Twit(config);
+        console.log("el usuario es");
+        console.log(user.twitterUserName);
         const resp =  await T.get('statuses/user_timeline', { screen_name: user.twitterUserName });
         const tweets = resp.data;
 

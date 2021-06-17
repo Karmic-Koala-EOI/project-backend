@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "NODE_ENV=development nodemon server.js",
+    "dev": "cross-env NODE_ENV=development nodemon server.js",
     "test": "NODE_ENV=test jest --forceExit --verbose --silent --maxWorkers=1",
     "test:watch": "npm run test -- --watchAll",
-    "prod": "NODE_ENV=production node server.js"
+    "prod": "cross-env NODE_ENV=production node server.js"
   },
   "repository": {
     "type": "git",
